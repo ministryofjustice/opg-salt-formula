@@ -1,4 +1,4 @@
-{% from "opg-admins/map.jinja" import admins with context %}
+{% from "admins/map.jinja" import admins with context %}
 
 include:
   - bootstrap.groups
@@ -54,7 +54,7 @@ admin-{{ user}}-key-{{ loop.index0 }}:
 /home/{{ user }}/.bashrc:
   file.append:
     - template: jinja
-    - source: salt://opg-admins/templates/bashrc
+    - source: salt://admins/templates/bashrc
     - require:
       - user: admin-{{ user }}
 

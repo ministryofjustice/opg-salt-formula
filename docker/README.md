@@ -1,5 +1,5 @@
-opg-docker-formula
-==================
+docker-formula
+==============
 Our simplified way to manage docker using salt and docker-compose.
 
 Exposed state sls:

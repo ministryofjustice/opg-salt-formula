@@ -1,4 +1,4 @@
-{% from "opg-cron/map.jinja" import cronjobs with context %}
+{% from "cron/map.jinja" import cronjobs with context %}
 
 {% for index in cronjobs['jobs'] %}
 
