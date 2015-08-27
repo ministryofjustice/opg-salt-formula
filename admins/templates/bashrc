@@ -1,0 +1,7 @@
+{% set opg_stackname = salt['grains.get']('opg_stackname') -%}
+{% set opg_domain = salt['grains.get']('opg_domain') -%}
+{% if "production" in opg_stackname and "dev" not in opg_domain %}
+PS1="\[\033[01;31m\]({{ opg_stackname }})$PS1\[\033[00m\]"
+{% else %}
+PS1="\[\033[01;34m\]({{ opg_stackname }})$PS1\[\033[00m\]"
+{% endif %}

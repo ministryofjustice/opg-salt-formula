@@ -1,2 +1,6 @@
 exports:
 - ntp
+- bootstrap
+- admins
+- docker
+- docker-compose
