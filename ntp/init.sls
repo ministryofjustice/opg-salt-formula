@@ -1,13 +1,11 @@
-{% from "ntp/map.jinja" import ntp with context %}
-
 ntp:
-  pkg.installed:
-    - version: {{ ntp.version }}
+  pkg.installed: []
   service.running:
     - watch:
       - file: /etc/ntp.conf
+
+/etc/ntp.conf:
   file.managed:
-    - name: /etc/ntp.conf
     - source: salt://ntp/templates/ntp.conf
     - mode: 644
     - template: jinja
