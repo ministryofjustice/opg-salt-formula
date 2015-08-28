@@ -1,4 +1,6 @@
 exports:
+- base
+- cron
 - ntp
 - bootstrap
 - admins
