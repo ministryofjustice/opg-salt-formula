@@ -1,4 +1,3 @@
-
 /etc/sudoers:
   file:
     - managed

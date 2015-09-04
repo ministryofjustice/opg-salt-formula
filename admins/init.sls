@@ -25,7 +25,6 @@ admin-{{ user }}:
       - adm
       - root
     - require:
-      - group: supervisor
       - group: wheel
   {% for key in data.get("public_keys", []) %}
 
