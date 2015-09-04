@@ -21,7 +21,6 @@ admin-{{ user }}:
     - order: 1
     - groups:
       - wheel
-      - supervisor
       - adm
       - root
     - require:
