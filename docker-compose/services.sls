@@ -28,7 +28,8 @@ docker-compose-up-{{service_name}}:
       - HOME: /root
     - watch:
       - file: /etc/docker-compose/{{service_name}}/*
-
+    - watch_in:
+      - cmd: flush_udp_conntrack
 
 {% for app_name in pillar['services'][service_name] %}
 {% if 'env' in pillar['services'][service_name][app_name] %}
@@ -48,3 +49,9 @@ docker-compose-up-{{service_name}}:
 
 {% endfor %}
 {% endif %}
+
+flush_udp_conntrack:
+  cmd.wait:
+    - name: conntrack -D -p udp
+    - require:
+      - pkg: conntrack

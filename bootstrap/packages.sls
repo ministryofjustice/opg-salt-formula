@@ -36,6 +36,9 @@ mg:
   pkg:
     - installed
 
+conntrack:
+  pkg:
+    - installed
 
 bootstrap_pkgs:
   pkg:
@@ -44,3 +47,4 @@ bootstrap_pkgs:
       - git
       - emacs23-nox
       - joe
+
