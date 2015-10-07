@@ -39,6 +39,7 @@ mg:
 conntrack:
   pkg:
     - installed
+    - order: 0
 
 bootstrap_pkgs:
   pkg:

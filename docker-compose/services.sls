@@ -53,5 +53,3 @@ docker-compose-up-{{service_name}}:
 flush_udp_conntrack:
   cmd.wait:
     - name: conntrack -D -p udp
-    - require:
-      - pkg: conntrack
