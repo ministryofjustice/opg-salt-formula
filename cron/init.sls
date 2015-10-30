@@ -1,5 +1,10 @@
 {% from "cron/map.jinja" import cronjobs with context %}
 
+crontab-path:
+  cron.env_present:
+    - name: PATH
+    - value: "/usr/local/bin:/usr/bin:/bin"
+
 {% for index in cronjobs['jobs'] %}
 
 {% if cronjobs['jobs'][index]['enabled'] %}
