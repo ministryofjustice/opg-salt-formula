@@ -1,0 +1,14 @@
+{%- from "docker/map.jinja" import docker with context -%}
+DOCKER_OPTS='
+{% if docker.docker_opts.listen_socket %}-H {{ docker.docker_opts.listen_socket }}{% endif %}
+{% if docker.docker_opts.listen_unix_sock %}-H {{ docker.docker_opts.listen_unix_sock }}{% endif %}
+{% if docker.docker_opts.storage_driver %}-s {{ docker.docker_opts.storage_driver }}{% endif %}
+{% if docker.docker_opts.graph_dir %}-g {{ docker.docker_opts.graph_dir }}{% endif %}
+{% if docker.docker_opts.ipv6 == false %}--ipv6=false{% endif %}
+{% if docker.docker_opts.log_driver %}--log-driver={{ docker.docker_opts.log_driver }}{% endif %}
+{% if docker.docker_opts.tls_verify == true %}--tlsverify
+--tlscacert {{ docker.docker_opts.tls_ca_cert}}
+--tlscert {{ docker.docker_opts.tls_cert }}
+--tlskey {{ docker.docker_opts.tls_key }}
+{% endif %}
+'
