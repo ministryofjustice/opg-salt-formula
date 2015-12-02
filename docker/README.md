@@ -13,7 +13,44 @@ Exposed state module:
 
 docker sls
 ----------
-Installs docker and configures /root/.dockercfg based on pillar['docker-registries']
+Configures /root/.dockercfg based on pillar['docker-registries'].
+
+Configures /etc/default/docker based on pillar['docker:docker_opts'], see map.jinja for defaults.  
+Example pillar:
+```
+docker:
+  docker_opts:
+    listen_socket: 'tcp://0.0.0.0:2376'
+    listen_unix_sock: 'unix:///var/run/docker.sock'
+    storage_driver: 'btrfs'
+    graph_dir: '/var/lib/docker'
+    ipv6: 'false'
+    log_driver: 'syslog'
+    tls_verify: 'true'
+    tls_ca_cert: '/etc/docker/ca.pem'
+    tls_cert: '/etc/docker/cert.pem'
+    tls_key: '/etc/docker/key.pem'
+```
+Pillar key names match the Docker daemon options.  For a full list of daemon options and their effects visit: [https://docs.docker.com/engine/reference/commandline/daemon/]
+
+Configures TLS certificates, required when pillar['docker:docker_opts:tls_verify'] is True.
+Example pillar:
+```
+docker:
+  tls:
+    ca: |
+      -----BEGIN CERTIFICATE-----
+      < certificate body >
+      -----END CERTIFICATE-----
+    key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      < key body >
+      -----END RSA PRIVATE KEY-----
+    cert: |
+      -----BEGIN CERTIFICATE-----
+      < certificate body >
+      -----END CERTIFICATE-----
+```
 
 
 docker-compose sls

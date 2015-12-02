@@ -1,0 +1,25 @@
+{% set docker = salt['grains.filter_by']({
+    'Debian': {
+      'pkg_version': '',
+      'py_version': '',
+      'manage_config': 'false',
+      'docker_opts': {
+        'listen_socket': 'tcp://0.0.0.0:2376',
+        'listen_unix_sock': 'unix:///var/run/docker.sock',
+        'storage_driver': '',
+        'graph_dir': '',
+        'ipv6': 'false',
+        'log_driver': 'syslog',
+        'tls_verify': 'false',
+        'tls_ca_cert': '/etc/docker/ca.pem',
+        'tls_cert': '/etc/docker/cert.pem',
+        'tls_key': '/etc/docker/key.pem'
+      },
+      'tls': {
+         'ca': '',
+         'key': '',
+         'cert': ''
+       }
+    },
+'default': 'Debian',
+}, merge=salt['pillar.get']('docker',{})) %}
