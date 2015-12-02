@@ -9,7 +9,7 @@
     - template: jinja
 
 
-{% if docker.manage_config == true %}
+{% if docker.manage_config == 'true' %}
 /etc/default/docker:
   file.managed:
     - source: salt://docker/templates/docker
