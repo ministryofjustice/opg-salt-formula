@@ -15,7 +15,13 @@ docker sls
 ----------
 Configures /root/.dockercfg based on pillar['docker-registries'].
 
-Configures /etc/default/docker based on pillar['docker:docker_opts'], see map.jinja for defaults.  
+Configures /etc/default/docker based on pillar['docker:docker_opts'], see map.jinja for defaults.  To toggle management of this file set the following pillar value:
+```
+docker:
+  manage_config: 'true'
+```
+
+
 Example pillar:
 ```
 docker:
