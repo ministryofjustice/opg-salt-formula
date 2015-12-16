@@ -1,0 +1,55 @@
+{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          docker-compose-{{service_name}}
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 6
+# Short-Description: docker-compose {{service_name}}
+# Description:       Start/stop {{service_name}} containers
+### END INIT INFO
+
+#TODO: add docker-compose output parsing and run conntrack only when needed
+#TODO: replace status with docker-compose parser and checker if containers are running (if really needed)
+
+
+start()
+{
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml up -d
+    ret=$?
+    /usr/sbin/conntrack -D -p udp
+    exit ${ret}
+}
+
+stop()
+{
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml stop
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml kill
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  reload)
+    start
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  status)
+    start
+    ;;
+  ps)
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|reload|restart|ps}"
+    exit 1
+    ;;
+esac

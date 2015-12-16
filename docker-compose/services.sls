@@ -20,16 +20,24 @@ include:
     - mode: 644
 
 
-docker-compose-up-{{service_name}}:
-  docker_compose.up:
-    - project: {{service_name}}
-    - config: /etc/docker-compose/{{service_name}}/docker-compose.yml
-    - env:
-      - HOME: /root
+/etc/init.d/docker-compose-{{service_name}}:
+  file.managed:
+    - name:
+    - source: salt://docker-compose/templates/docker-compose-service
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 755
+    - context:
+        service_name: {{service_name}}
+
+
+docker-compose-{{service_name}}:
+  service.running:
+    - enable: True
     - watch:
-      - file: /etc/docker-compose/{{service_name}}/*
-    - watch_in:
-      - cmd: flush_udp_conntrack
+      - file: /etc/init.d/docker-compose-{{service_name}}
+
 
 {% for app_name in pillar['services'][service_name] %}
 {% if 'env' in pillar['services'][service_name][app_name] %}
@@ -43,13 +51,11 @@ docker-compose-up-{{service_name}}:
     - context:
         app_name: {{app_name}}
         service_name: {{service_name}}
+    - watch_in:
+      - service: docker-compose-{{service_name}}
 {% endif %}
 {% endfor %}
 
 
 {% endfor %}
 {% endif %}
-
-flush_udp_conntrack:
-  cmd.wait:
-    - name: conntrack -D -p udp

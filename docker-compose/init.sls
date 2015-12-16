@@ -1,2 +1,2 @@
-include:
-  - .config
+/etc/docker-compose:
+  file.directory
