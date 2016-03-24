@@ -49,13 +49,6 @@ admin-{{ user}}-key-{{ loop.index0 }}:
       - user: admin-{{ user }}
   {% endfor %}
 
-/home/{{ user }}/.bashrc:
-  file.append:
-    - template: jinja
-    - source: salt://admins/templates/bashrc
-    - require:
-      - user: admin-{{ user }}
-
   {% if 'use_vim_editing' in data and data['use_vim_editing'] %}
 /home/{{ user }}/.inputrc:
   file.managed:
