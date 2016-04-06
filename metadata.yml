@@ -6,3 +6,4 @@ exports:
 - admins
 - docker
 - docker-compose
+- mongodb

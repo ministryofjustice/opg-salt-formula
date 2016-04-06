@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -e
+
+backup_dir=/var/backups/mongodb
+restore_files=true
+
+user=''
+password=''
+
+
+while getopts d:u:p: o; do
+  case "$o" in
+    d)  backup_dir="${OPTARG}";;
+    u)  user="${OPTARG}";;
+    p)  password="${OPTARG}";;
+    [?])  print >&2 "Usage: $0 [-i] [-d backup_dir] {files_to_recover}"
+          exit 1;;
+  esac
+done
+shift $(( $OPTIND - 1 ))
+
+cd $backup_dir
+
+# By default, restore all bson dumps bar system.indexes and system.users
+# since we will re-add users and indexes ourselves.
+default_backup_files=$( find . -name \*.bson | grep -v system.indexes | grep -v system.users )
+
+backup_files=$*
+
+if [ "X$backup_files" = "X" ]; then
+  backup_files=$default_backup_files
+fi
+
+if [ -z $user ]; then
+  RESTORE_COMMAND="mongorestore"
+else
+  RESTORE_COMMAND="mongorestore -u $user -p $password"
+fi
+
+for backup_file in $backup_files; do
+  echo "Restoring $backup_file from $backup_dir"
+  $RESTORE_COMMAND ${backup_file}
+done
