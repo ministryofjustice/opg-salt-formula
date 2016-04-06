@@ -1,10 +1,10 @@
-{% from 'mongodb/map.jinja' import mongodb with context %}
-{% from 'logstash/lib.sls' import logship with context %}
-{% from 'firewall/lib.sls' import firewall_enable with context %}
+#{% from 'mongodb/map.jinja' import mongodb with context %}
+#{% from 'logstash/lib.sls' import logship with context %}
+#{% from 'firewall/lib.sls' import firewall_enable with context %}
 
 include:
-  - firewall
-  - logstash.client
+#  - firewall
+#  - logstash.client
   - .backup
 
 
@@ -268,5 +268,5 @@ python-pymongo:
     - template: jinja
     - onlyif: test -d /etc/backup.d
 
-{{ firewall_enable('mongodb',27017,'tcp') }}
-{{ logship('mongodb_log',  '/var/log/mongodb/mongodb.log', 'mongodb_log', ['mongodb', 'log'],  'json') }}
+#{{ firewall_enable('mongodb',27017,'tcp') }}
+#{{ logship('mongodb_log',  '/var/log/mongodb/mongodb.log', 'mongodb_log', ['mongodb', 'log'],  'json') }}
