@@ -1,67 +1,7 @@
-#{% from 'mongodb/map.jinja' import mongodb with context %}
-#{% from 'logstash/lib.sls' import logship with context %}
-#{% from 'firewall/lib.sls' import firewall_enable with context %}
+{% from 'mongodb/map.jinja' import mongodb with context %}
 
 include:
-#  - firewall
-#  - logstash.client
   - .backup
-
-
-{% if mongodb.use_native_package %}
-mongodb-server:
-  pkg:
-    - installed
-
-mongodb-clients:
-  pkg:
-    - installed
-
-# DO NO include '- reload: True' : Unsupported on ubuntu. Was causing mongodb process to exit, and subsequent wait-for-mongodb-server to hang indefiniately during initial build.
-mongod:
-  service:
-    - name: mongodb
-    - running
-    - enable: True
-    - watch:
-      - pkg: mongodb-server
-      - file: {{mongodb.dbpath}}
-      - file: /etc/mongodb.conf
-      - file: /etc/init/mongodb.conf
-      - file: /etc/mongo.pem
-
-/etc/mongo.pem:
-  file.managed:
-    - contents_pillar: mongodb:pem
-    - mode: 600
-    - user: mongodb
-    - watch_in:
-      - service: mongod
-
-/etc/init/mongodb.conf:
-  file.managed:
-    - source: salt://mongodb/templates/native/upstart.conf
-    - template: jinja
-
-/etc/mongodb.conf:
-  file:
-    - managed
-    - source: salt://mongodb/templates/native/mongodb.conf
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 644
-
-{{mongodb.dbpath}}:
-  file.directory:
-    - user: mongodb
-    - group: mongodb
-    - mode: 750
-    - makedirs: True
-    - require:
-      - pkg: mongodb-server
-
-{% else %}
 
 install-tls-dependencies:
   pkg.installed:
@@ -78,8 +18,8 @@ mongodb-org-apt-key:
     - name: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
     - unless: apt-key list | grep '7F0CEB10'
     - require:
-        - pkg: mongodb-server
-        - pkg: mongodb-clients
+      - pkg: mongodb-server
+      - pkg: mongodb-clients
 
 mongodb-org-deb:
   pkgrepo.managed:
@@ -251,12 +191,10 @@ create_index_{{ dbname }}__{{coll_def.name}}__{{index_def.name}}:
 {%   endfor %}
 {% endfor %}
 
-{% endif %}
-
 # pymongo is required for the main mongodb sensu check
-python-pymongo:
-  pkg:
-    - installed
+#python-pymongo:
+#  pkg:
+#    - installed
 
 /etc/backup.d/30.mongodb:
   file:
@@ -268,5 +206,3 @@ python-pymongo:
     - template: jinja
     - onlyif: test -d /etc/backup.d
 
-#{{ firewall_enable('mongodb',27017,'tcp') }}
-#{{ logship('mongodb_log',  '/var/log/mongodb/mongodb.log', 'mongodb_log', ['mongodb', 'log'],  'json') }}
