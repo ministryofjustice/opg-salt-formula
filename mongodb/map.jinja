@@ -1,18 +1,4 @@
 {% set mongodb = salt['grains.filter_by']({
-    'Ubuntu-12.04': {
-        'dbpath': '/data',
-        'databases': {},
-        'noprimarybackup': 'true',
-        'configuration': {
-          'auto_initiate_replica_set_params': None,
-          'databases': {}
-        },
-        'rs': None,
-        'rs_members': [],
-        'auth': None,
-        'key_string': None,
-        'use_native_package': True,
-    },
     'Ubuntu-14.04': {
         'dbpath': '/data',
         'databases': {},
