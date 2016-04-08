@@ -23,7 +23,7 @@ monitoring-client-docker-compose-yml:
 
 /etc/init.d/docker-compose-monitoringclient:
   file.managed:
-    - name: docker-compose-monitoringclient
+    - name:
     - source: salt://docker-compose/templates/docker-compose-service
     - template: jinja
     - user: root

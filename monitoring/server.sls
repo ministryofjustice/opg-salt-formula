@@ -34,7 +34,7 @@ monitoring-server-docker-adhoc-yml:
 
 /etc/init.d/docker-compose-monitoringserver:
   file.managed:
-    - name: docker-compose-monitoringserver
+    - name:
     - source: salt://docker-compose/templates/docker-compose-service
     - template: jinja
     - user: root
