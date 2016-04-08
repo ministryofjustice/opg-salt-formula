@@ -51,8 +51,6 @@ docker-compose-monitoringclient:
     - context:
         project: 'client'
         service: {{service}}
-#    - watch_in:
-#      - service: docker-compose-{{service}}
     - require:
       - file: monitoring-client-project-dir
 
