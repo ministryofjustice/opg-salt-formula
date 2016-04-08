@@ -1,4 +1,4 @@
-{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context %}
 
 {% if monitoring.server.elasticsearch.curator.enabled %}
 

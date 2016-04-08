@@ -7,7 +7,7 @@ include:
 
 /etc/docker-compose/{{service}}.env:
   file.managed:
-    - source: salt://opg-docker-monitoring/templates/service.env
+    - source: salt://monitoring/templates/service.env
     - template: jinja
     - user: root
     - group: root

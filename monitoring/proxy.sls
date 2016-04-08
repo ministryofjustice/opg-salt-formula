@@ -1,4 +1,4 @@
-{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context %}
 
 include:
   - .docker
@@ -17,7 +17,7 @@ monitoring-proxy-project-dir:
 monitoring-proxy-docker-compose-yml:
   file.managed:
     - name: /etc/docker-compose/monitoring-proxy/docker-compose.yml
-    - source: salt://opg-docker-monitoring/templates/compose-monitoring-proxy.yml
+    - source: salt://monitoring/templates/compose-monitoring-proxy.yml
     - template: jinja
     - user: root
     - group: root
@@ -44,7 +44,7 @@ monitoring-proxy-docker-compose-up:
 
 /etc/docker-compose/monitoring-proxy/{{service}}.env:
   file.managed:
-    - source: salt://opg-docker-monitoring/templates/service.env
+    - source: salt://monitoring/templates/service.env
     - template: jinja
     - user: root
     - group: root

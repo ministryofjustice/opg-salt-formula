@@ -1,4 +1,4 @@
-#{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+#{% from "monitoring/map.jinja" import monitoring with context %}
 #
 #sensuclient:
 #  image: registry.service.dsd.io/opguk/sensu-client:{{monitoring.version.opg_docker_monitoring}}

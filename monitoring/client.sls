@@ -1,4 +1,4 @@
-{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context %}
 
 include:
   - .docker
@@ -14,7 +14,7 @@ monitoring-client-project-dir:
 monitoring-client-docker-compose-yml:
   file.managed:
     - name: /etc/docker-compose/monitoring-client/docker-compose.yml
-    - source: salt://opg-docker-monitoring/templates/compose-monitoring-client.yml
+    - source: salt://monitoring/templates/compose-monitoring-client.yml
     - template: jinja
     - user: root
     - group: root
@@ -43,7 +43,7 @@ docker-compose-monitoringclient:
 
 /etc/docker-compose/monitoring-client/{{service}}.env:
   file.managed:
-    - source: salt://opg-docker-monitoring/templates/service.env
+    - source: salt://monitoring/templates/service.env
     - template: jinja
     - user: root
     - group: root

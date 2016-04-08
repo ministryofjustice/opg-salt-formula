@@ -1,4 +1,4 @@
-{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context %}
 
 include:
   - .docker
@@ -16,7 +16,7 @@ monitoring-server-project-dir:
 monitoring-server-docker-compose-yml:
   file.managed:
     - name: /etc/docker-compose/monitoring-server/docker-compose.yml
-    - source: salt://opg-docker-monitoring/templates/compose-monitoring-server.yml
+    - source: salt://monitoring/templates/compose-monitoring-server.yml
     - template: jinja
     - user: root
     - group: root
@@ -26,7 +26,7 @@ monitoring-server-docker-compose-yml:
 monitoring-server-docker-adhoc-yml:
   file.managed:
     - name: /etc/docker-compose/monitoring-server/docker-compose-adhoc.yml
-    - source: salt://opg-docker-monitoring/templates/compose-monitoring-adhoc.yml
+    - source: salt://monitoring/templates/compose-monitoring-adhoc.yml
     - template: jinja
     - user: root
     - group: root
@@ -81,7 +81,7 @@ elasticsearch-data-dir:
 
 /etc/docker-compose/monitoring-server/{{service}}.env:
   file.managed:
-    - source: salt://opg-docker-monitoring/templates/service.env
+    - source: salt://monitoring/templates/service.env
     - template: jinja
     - user: root
     - group: root
