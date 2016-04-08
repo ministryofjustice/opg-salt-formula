@@ -1,4 +1,4 @@
-{% from "opg-docker-monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context %}
 #!/bin/bash
 ### BEGIN INIT INFO
 # Provides:          docker-compose-{{service_name}}

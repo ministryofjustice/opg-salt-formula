@@ -1,129 +1,129 @@
-#{% from "monitoring/map.jinja" import monitoring with context %}
-#
-#router:
-#  image: registry.service.dsd.io/opguk/nginx-router:{{monitoring.version.opg_docker}}
-#  log_driver: syslog
-#  ports:
-#    - 80:80
-#    - 443:443
-#  links:
-#    - kibana
-#    - grafana
-#    - graphite
-#    - uchiwa
-#  environment:
-#    - OPG_NGINX_SSL_FORCE_REDIRECT=1
-#    - OPG_NGINX_ROUTER_00_VHOST=kibana.* ~^kibana-
-#    - OPG_NGINX_ROUTER_00_TARGET=http://kibana:5601
-#    - OPG_NGINX_ROUTER_01_VHOST=grafana.* ~^grafana-
-#    - OPG_NGINX_ROUTER_01_TARGET=http://grafana:3000
-#    - OPG_NGINX_ROUTER_02_VHOST=graphite.* ~^graphite-
-#    - OPG_NGINX_ROUTER_02_TARGET=http://graphite
-#    - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
-#    - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
-#
-#
-#kibana:
-#  image: registry.service.dsd.io/opguk/kibana:{{monitoring.version.opg_docker}}
-#  log_driver: syslog
-#  links:
-#    - elasticsearch
-#  env_file: ./kibana.env
-#
-#
-## data on volume
-#elasticsearch:
-#  image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker}}
-#  log_driver: syslog
-#  ports:
-#    - 9200:9200
-#    - 9300:9300
-#  env_file: ./elasticsearch.env
-#  volumes:
-#    - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-#
-#
-## user/pass: admin/admin
-#grafana:
-#  image: registry.service.dsd.io/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  links:
-#    - graphite
-#  env_file: ./grafana.env
-#  volumes:
-#    - {{ monitoring.server.grafana.data_dir }}:/usr/share/grafana/data
-#
-#
-#logstash:
-#  image: registry.service.dsd.io/opguk/logstash:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  ports:
-#    - 2514:2514/udp
-#    - 2514:2514
-#  links:
-#    - redis
-#    - elasticsearch
-#    - graphite
-#  env_file: ./logstash.env
-#
-#
-#redis:
-#  image: redis:latest
-#  log_driver: syslog
-#  ports:
-#    - 6379:6379
-#  env_file: ./redis.env
-#  entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
-#
-#
-## data on volume
-#graphite:
-#  image: registry.service.dsd.io/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  ports:
-#    - 2003:2003
-#    - 2003:2003/udp
-#    - 8003:80
-#    - 8125:8125/udp
-#  env_file: ./graphite.env
-#  volumes:
-#    - {{ monitoring.server.graphite.data_dir }}:/opt/graphite/storage
-#
-#
-#rabbitmq:
-#  image: registry.service.dsd.io/opguk/rabbitmq:{{monitoring.version.opg_docker}}
-#  log_driver: syslog
-#  ports:
-#    - 5672:5672
-#  env_file: ./rabbitmq.env
-#
-#
-#sensuserver:
-#  image: registry.service.dsd.io/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  links:
-#    - redis
-#    - rabbitmq
-#    - sensuapi
-#  env_file: ./sensu.env
-#
-#
-#sensuapi:
-#  image: registry.service.dsd.io/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  links:
-#    - redis
-#    - rabbitmq
-#  env_file: ./sensu.env
-#
-#
-#uchiwa:
-#  image: registry.service.dsd.io/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  links:
-#    - sensuapi
-#    - sensuserver
-#  env_file: ./uchiwa.env
-#
-#
-#
+{% from "monitoring/map.jinja" import monitoring with context %}
+
+router:
+  image: registry.service.dsd.io/opguk/nginx-router:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  ports:
+    - 80:80
+    - 443:443
+  links:
+    - kibana
+    - grafana
+    - graphite
+    - uchiwa
+  environment:
+    - OPG_NGINX_SSL_FORCE_REDIRECT=1
+    - OPG_NGINX_ROUTER_00_VHOST=kibana.* ~^kibana-
+    - OPG_NGINX_ROUTER_00_TARGET=http://kibana:5601
+    - OPG_NGINX_ROUTER_01_VHOST=grafana.* ~^grafana-
+    - OPG_NGINX_ROUTER_01_TARGET=http://grafana:3000
+    - OPG_NGINX_ROUTER_02_VHOST=graphite.* ~^graphite-
+    - OPG_NGINX_ROUTER_02_TARGET=http://graphite
+    - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
+    - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
+
+
+kibana:
+  image: registry.service.dsd.io/opguk/kibana:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  links:
+    - elasticsearch
+  env_file: ./kibana.env
+
+
+# data on volume
+elasticsearch:
+  image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  ports:
+    - 9200:9200
+    - 9300:9300
+  env_file: ./elasticsearch.env
+  volumes:
+    - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
+
+
+# user/pass: admin/admin
+grafana:
+  image: registry.service.dsd.io/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  links:
+    - graphite
+  env_file: ./grafana.env
+  volumes:
+    - {{ monitoring.server.grafana.data_dir }}:/usr/share/grafana/data
+
+
+logstash:
+  image: registry.service.dsd.io/opguk/logstash:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  ports:
+    - 2514:2514/udp
+    - 2514:2514
+  links:
+    - redis
+    - elasticsearch
+    - graphite
+  env_file: ./logstash.env
+
+
+redis:
+  image: redis:latest
+  log_driver: syslog
+  ports:
+    - 6379:6379
+  env_file: ./redis.env
+  entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
+
+
+# data on volume
+graphite:
+  image: registry.service.dsd.io/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  ports:
+    - 2003:2003
+    - 2003:2003/udp
+    - 8003:80
+    - 8125:8125/udp
+  env_file: ./graphite.env
+  volumes:
+    - {{ monitoring.server.graphite.data_dir }}:/opt/graphite/storage
+
+
+rabbitmq:
+  image: registry.service.dsd.io/opguk/rabbitmq:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  ports:
+    - 5672:5672
+  env_file: ./rabbitmq.env
+
+
+sensuserver:
+  image: registry.service.dsd.io/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  links:
+    - redis
+    - rabbitmq
+    - sensuapi
+  env_file: ./sensu.env
+
+
+sensuapi:
+  image: registry.service.dsd.io/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  links:
+    - redis
+    - rabbitmq
+  env_file: ./sensu.env
+
+
+uchiwa:
+  image: registry.service.dsd.io/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  links:
+    - sensuapi
+    - sensuserver
+  env_file: ./uchiwa.env
+
+
+

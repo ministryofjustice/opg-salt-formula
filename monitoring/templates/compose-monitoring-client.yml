@@ -1,15 +1,15 @@
-#{% from "monitoring/map.jinja" import monitoring with context %}
-#
-#sensuclient:
-#  image: registry.service.dsd.io/opguk/sensu-client:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  ports:
-#    - 3030:3030
-#  env_file:
-#    - ./sensuclient.env
-#{% if salt['pillar.get']('monitoring:client:checksbase:env') %}
-#    - ./checksbase.env
-#{% endif %}
-#{% if salt['pillar.get']('monitoring:client:checksrole:env') %}
-#    - ./checksrole.env
-#{% endif %}
+{% from "monitoring/map.jinja" import monitoring with context %}
+
+sensuclient:
+  image: registry.service.dsd.io/opguk/sensu-client:{{monitoring.version.opg_docker_monitoring}}
+  log_driver: syslog
+  ports:
+    - 3030:3030
+  env_file:
+    - ./sensuclient.env
+{% if salt['pillar.get']('monitoring:client:checksbase:env') %}
+    - ./checksbase.env
+{% endif %}
+{% if salt['pillar.get']('monitoring:client:checksrole:env') %}
+    - ./checksrole.env
+{% endif %}
