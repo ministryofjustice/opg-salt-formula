@@ -20,24 +20,6 @@ monitoring-client-docker-compose-yml:
     - group: root
     - mode: 644
 
-
-/etc/init.d/docker-compose-monitoringclient:
-  file.managed:
-    - name:
-    - source: salt://docker-compose/templates/docker-compose-service
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 755
-    - context:
-        service_name: monitoringclient
-
-docker-compose-monitoringclient:
-  service.running:
-    - enable: True
-    - watch:
-      - file: /etc/init.d/docker-compose-monitoringclient
-
 {% for service in salt['pillar.get']('monitoring:client') %}
 {% if 'env' in pillar['monitoring']['client'][service]  %}
 

@@ -32,29 +32,6 @@ monitoring-server-docker-adhoc-yml:
     - group: root
     - mode: 644
 
-/etc/init.d/docker-compose-monitoringserver:
-  file.managed:
-    - name:
-    - source: salt://docker-compose/templates/docker-compose-service
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 755
-    - context:
-        service_name: monitoringserver
-    - require:
-      - file: monitoring-server-docker-compose-yml
-      - file: grafana-data-dir
-      - file: graphite-data-dir
-      - file: elasticsearch-data-dir
-
-docker-compose-monitoringserver:
-  service.running:
-    - enable: True
-    - watch:
-      - file: /etc/init.d/docker-compose-monitoringserver
-
-
 grafana-data-dir:
   file.directory:
     - name: {{ monitoring.server.grafana.data_dir }}
