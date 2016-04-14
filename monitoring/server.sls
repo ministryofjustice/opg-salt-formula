@@ -22,17 +22,7 @@ monitoring-server-docker-compose-yml:
     - group: root
     - mode: 644
 
-
-monitoring-server-docker-adhoc-yml:
-  file.managed:
-    - name: /etc/docker-compose/monitoring-server/docker-compose-adhoc.yml
-    - source: salt://monitoring/templates/compose-monitoring-adhoc.yml
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 644
-
-grafana-data-dir:
+  grafana-data-dir:
   file.directory:
     - name: {{ monitoring.server.grafana.data_dir }}
     - mode: 0777
