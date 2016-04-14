@@ -1,7 +1,0 @@
-{% from "monitoring/map.jinja" import monitoring with context %}
-
-monitoringproxy:
-  image: registry.service.dsd.io/opguk/monitoring-proxy:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  env_file: ./monitoringproxy.env
-
