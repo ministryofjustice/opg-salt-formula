@@ -35,6 +35,7 @@ kibana:
 elasticsearch:
   image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker}}
   log_driver: syslog
+  mem_limit: 1073741824
   ports:
     - 9200:9200
     - 9300:9300
