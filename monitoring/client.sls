@@ -20,6 +20,13 @@ monitoring-client-docker-compose-yml:
     - group: root
     - mode: 644
 
+monitoring-client-docker-compose-yml-test:
+  file.directory:
+    - name: /etc/docker-compose/monitoring-client/foobaz
+    - user: root
+    - group: root
+    - mode: 644
+
 {% for service in salt['pillar.get']('monitoring:client') %}
 {% if 'env' in pillar['monitoring']['client'][service]  %}
 
