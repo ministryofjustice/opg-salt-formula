@@ -12,12 +12,6 @@ monitoring-server-project-dir:
     - group: root
     - mode: 0755
 
-monitoring-server-project-dir-test:
-  file.directory:
-    - name: /etc/docker-compose/monitoring-server/chickens
-    - user: root
-    - group: root
-    - mode: 0755
 
 monitoring-server-docker-compose-yml:
   file.managed:
