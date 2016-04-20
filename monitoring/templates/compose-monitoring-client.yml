@@ -7,9 +7,13 @@ sensuclient:
     - 3030:3030
   env_file:
     - ./sensuclient.env
-{% if salt['pillar.get']('monitoring:client:checksbase:env') %}
-    - ./checksbase.env
+
+{% for service in salt['pillar.get']('services:monitoring-client') %}
+{% if 'env' in pillar['monitoring']['client'][service]%}
+{% if service|string() not 'sensuclient' %}
+    - ./{{service}}.env
 {% endif %}
-{% if salt['pillar.get']('monitoring:client:checksrole:env') %}
-    - ./checksrole.env
 {% endif %}
+{% endfor %}
+
+# {{ monitoring.client }}
