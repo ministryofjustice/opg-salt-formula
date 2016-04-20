@@ -10,7 +10,7 @@ sensuclient:
 
 {% for service in salt['pillar.get']('services:monitoring-client') %}
 {% if 'env' in pillar['monitoring']['client'][service]%}
-{% if service|string() not 'sensuclient' %}
+{% if not service|string() == 'sensuclient' %}
     - ./{{service}}.env
 {% endif %}
 {% endif %}
