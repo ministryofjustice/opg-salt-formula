@@ -40,8 +40,8 @@ docker-compose-{{service_name}}:
 
 
 {% for app_name in pillar['services'][service_name] %}
-{% if 'env_files' in pillar['services'][service_name][app_name] %}
-{% for environment in pillar['services'][service_name][app_name]['env_files'] %}
+{% if 'env_files' in pillar['services'][service_name] %}
+{% for app_name in pillar['services'][service_name]['env_files'] %}
 /etc/docker-compose/{{service_name}}/{{environment}}.env:
   file.managed:
     - source: salt://docker-compose/templates/app.env
@@ -56,22 +56,7 @@ docker-compose-{{service_name}}:
       - service: docker-compose-{{service_name}}
 
 {% endfor %}
-{% elif 'env' in pillar['services'][service_name][app_name] %}
-/etc/docker-compose/{{service_name}}/{{app_name}}.env:
-  file.managed:
-    - source: salt://docker-compose/templates/app.env
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 600
-    - context:
-        app_name: {{app_name}}
-        service_name: {{service_name}}
-    - watch_in:
-      - service: docker-compose-{{service_name}}
 {% endif %}
 {% endfor %}
-
-
 {% endfor %}
 {% endif %}
