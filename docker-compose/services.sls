@@ -41,8 +41,8 @@ docker-compose-{{service_name}}:
 
 {% for app_name in pillar['services'][service_name] %}
 {% if 'env_files' in pillar['services'][service_name][app_name] %}
-{% for enviroment in pillar['services'][service_name][app_name]['env_files'] %}
-/etc/docker-compose/{{service_name}}/{{enviroment}}.env:
+{% for environment in pillar['services'][service_name][app_name]['env_files'] %}
+/etc/docker-compose/{{service_name}}/{{environment}}.env:
   file.managed:
     - source: salt://docker-compose/templates/app.env
     - template: jinja
