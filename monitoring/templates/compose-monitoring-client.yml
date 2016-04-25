@@ -6,6 +6,6 @@ sensuclient:
   ports:
     - 3030:3030
   env_file:
-{% for env_name in salt['pillar.get']('services:monitoring-client:env_files') %}
+{% for env_name in salt['pillar.get']('services:monitoring-client:env_files') -%}
     - ./{{env_name}}.env
 {% endfor %}
