@@ -55,7 +55,7 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{env_name}}
         service_name: {{service_name}}
-{% if env_extra is defined -%}
+{% if env_extra is defined %}
         env_extra: {{env_extra}}
 {% endif %}
     - watch_in:
