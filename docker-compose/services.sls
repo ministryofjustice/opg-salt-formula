@@ -2,8 +2,8 @@ include:
   - docker
   - docker-compose
 
-{% if 'services' in pillar %}
-{% for service_name in pillar['services'] %}
+{%  if 'services' in pillar %}
+{%    for service_name in pillar['services'] %}
 /etc/docker-compose/{{service_name}}:
   file.directory:
     - user: root
@@ -39,9 +39,9 @@ docker-compose-{{service_name}}:
       - file: /etc/init.d/docker-compose-{{service_name}}
 
 
-{% for app_name in pillar['services'][service_name] %}
-{% if 'env_files' in pillar['services'][service_name] %}
-{% for env_name in pillar['services'][service_name]['env_files'] %}
+{%      if pillar['services'][service_name]['env_files'] is defined %}
+{%        for env_name in pillar['services'][service_name]['env_files'] %}
+
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
   file.managed:
     - source: salt://docker-compose/templates/app.env
@@ -50,14 +50,13 @@ docker-compose-{{service_name}}:
     - group: root
     - mode: 600
     - context:
-        app_name: {{app_name}}
+        app_name: {{env_name}}
         service_name: {{service_name}}
     - watch_in:
       - service: docker-compose-{{service_name}}
 
-{% endfor %}
-{% endif %}
-{% endfor %}
+{%        endfor %}
+{%      endif %}
 
-{% endfor %}
-{% endif %}
+{%    endfor %}
+{%  endif %}
