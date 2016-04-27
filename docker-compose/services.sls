@@ -10,6 +10,17 @@ include:
     - group: root
     - mode: 0755
 
+{%      if 'directories' in pillar['services'][service_name] %}
+{%        for directory in pillar['services'][service_name]['directories'] %}
+
+{{ pillar['services'][service_name]['directories'][directory]['path']}}:
+  file.directory:
+    - user:  {{ pillar['services'][service_name]['directories'][directory]['user'] | default('root') }}
+    - group: {{ pillar['services'][service_name]['directories'][directory]['group'] | default('root') }}
+    - mode:  {{ pillar['services'][service_name]['directories'][directory]['mode'] | default('0755') }}
+
+{%        endfor %}
+{%      endif %}
 
 /etc/docker-compose/{{service_name}}/docker-compose.yml:
   file.managed:
