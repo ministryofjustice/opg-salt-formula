@@ -255,4 +255,53 @@ It is VERY IMPORTANT that `UCHIWA_SENSU_MULTIPLE` accurately reflects the actual
 
 See the `env` file in this repository for examples of multiple data centers.
 
-#Example configuration
+#Example client pillar configuration
+
+```yml
+monitoring:
+  version:
+    opg_docker: latest
+    opg_docker_monitoring: latest
+
+services:
+  monitoring-client:
+    docker-compose-source: salt://monitoring/templates/compose-monitoring-client.yml
+    #Common settings for all clients
+    env_files:
+      sensuclient:
+        #env vars
+      checksbase:
+        #env vars
+    #Grain specific settings
+    extra:
+      checksbase_master:
+        #grain specfic env vars
+      checksbase_monitoring:
+        #grain specfic env vars
+```
+
+#Example server pillar configuration
+
+```yml
+services:
+  monitoring-server:
+    docker-compose-source: salt://monitoring/templates/compose-monitoring-server.yml
+    directories:
+      grafana:
+        path: /data/grafana
+        mode: 0777
+      graphite:
+        path: /data/graphite
+        mode: 0775
+      elasticsearch:
+        path: /data/elasticsearch
+        mode: 0775
+    elasticsearch:
+      env:
+        #env vars
+    grafana:
+      env:
+        #env vars
+    graphite:
+      #...
+```
