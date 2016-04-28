@@ -1,0 +1,26 @@
+{% set monitoring = salt['grains.filter_by']({
+  'Ubuntu': {
+    'version': {
+      'opg_docker_monitoring': 'latest',
+      'opg_docker': 'latest'
+    },
+    'server': {
+      'elasticsearch': {
+        'data_dir': '/data/elasticsearch',
+        'curator': {
+          'enabled': False,
+          'indices': {}
+        },
+        'snapshot': {
+          'enabled': False
+        }
+      },
+      'grafana': {
+        'data_dir': '/data/grafana'
+      },
+      'graphite': {
+        'data_dir': '/data/graphite'
+      }
+    }
+  }
+}, merge=salt['pillar.get']('monitoring'), default='Ubuntu') %}

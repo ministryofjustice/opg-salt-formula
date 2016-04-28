@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# indexes are of the form:
+#   { pay_by: 1 }
+#   { state: 1, type: 1 }
+# ... as provided to the db.dbname.ensureIndex() call
+
+set -e
+
+while getopts u:p: o; do
+  case "$o" in
+    u)  user="${OPTARG}";;
+    p)  password="${OPTARG}";;
+    [?])  print >&2 "Usage: $0 [-u user] [-p password] {database} {collection} {index_definition} ..."
+          exit 1;;
+  esac
+done
+shift $(( $OPTIND - 1 ))
+
+database=$1
+collection=$2
+shift 2
+
+if [ -z "$user" ]; then
+  conn_str="mongo --quiet"
+else
+  conn_str="mongo --quiet -u $user -p $password"
+fi
+
+is_master=`$conn_str $database --eval "db.isMaster()['ismaster']"`
+if [ "$is_master" != "true" ]; then
+  echo "$0: Not master, no need to reindex $database:$collection"
+  exit 0;
+fi
+
+for index in "$@"; do
+  $conn_str --eval "printjson(db.${collection}.ensureIndex( $index ))" $database
+done
+

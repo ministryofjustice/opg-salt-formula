@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -e
+
+add=false
+
+while getopts u:p:d:a o; do
+  case "$o" in
+    u)  user="${OPTARG}";;
+    p)  password="${OPTARG}";;
+    d)  delay="${OPTARG}";;
+    a)  add=true;;
+    [?])  echo "Usage: $0 [-u user] [-p password] [-d delay] [-a] rs_name master_node secondary_node ..." >&2
+          exit 1;;
+  esac
+done
+shift $(( $OPTIND - 1 ))
+
+rs_name=$1
+master_node=$2
+shift 2
+
+WAIT_FOR_MONGOD=5
+while [ $WAIT_FOR_MONGOD -gt 0 ]; do
+  mongo -u $user -p $password --eval "pwd()" admin >/dev/null 2>&1 && break
+  WAIT_FOR_MONGOD=$(( $WAIT_FOR_MONGOD - 1 ))
+  sleep 1
+done
+
+if [ $WAIT_FOR_MONGOD -eq 0 ]; then
+  echo "Mongo is not contactable, aborting"
+  exit 1
+fi
+
+mongo -u $user -p $password --eval "printjson(rs.initiate({'_id': '${rs_name}', 'members': [{ '_id': 0, 'host': '${master_node}:27017'}]}))" admin
+if $add; then
+  for secondary_node in $*; do
+    mongo -u $user -p $password --eval "printjson(rs.add( { host: '$secondary_node:27017', priority: 0, hidden: false} ) )" admin
+    done
+fi
+
+if [ -n "${delay}" ]; then
+  sleep $delay
+fi
