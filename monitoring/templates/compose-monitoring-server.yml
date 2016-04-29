@@ -126,5 +126,12 @@ uchiwa:
     - sensuserver
   env_file: ./uchiwa.env
 
-
+{%  if pillar['services']['monitoring-server']['elasticsearch']['curator'] is defined %}
+  elasticcurator:
+    image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker}}
+    log_driver: syslog
+    external_links:
+      - monitoringserver_elasticsearch_1:elasticsearch
+    env_file: ./elasticsearch.env
+{%  endif %}
 
