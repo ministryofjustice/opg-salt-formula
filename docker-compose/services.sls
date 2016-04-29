@@ -33,7 +33,6 @@ include:
 
 /etc/init.d/docker-compose-{{service_name}}:
   file.managed:
-    - name:
     - source: salt://docker-compose/templates/docker-compose-service
     - template: jinja
     - user: root
