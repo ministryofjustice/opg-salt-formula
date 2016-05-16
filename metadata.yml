@@ -7,4 +7,5 @@ exports:
 - docker
 - docker-compose
 - mongodb
+- mongodb-client
 - monitoring
