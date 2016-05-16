@@ -8,9 +8,6 @@ mongodb-org-apt-key:
   cmd.run:
     - name: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
     - unless: apt-key list | grep '7F0CEB10'
-    - require:
-      - pkg: mongodb-server
-      - pkg: mongodb-clients
 
 mongodb-org-deb:
   pkgrepo.managed:
@@ -21,13 +18,14 @@ mongodb-org-deb:
       - cmd: mongodb-org-apt-key
 
 mongodb-org-shell:
-  pkg.installed:
-    - version: 3.0.3
+  pkg:
+    - refresh: True
+    - installed
     - require:
-      - pkgrepo: mongodb-org-shell
+      - pkgrepo: mongodb-org-deb
 
 mongodb-org-tools:
-  pkg.installed:
-    - version: 3.0.3
+  pkg:
+    - installed
     - require:
-      - pkgrepo: mongodb-org-tools
+      - pkgrepo: mongodb-org-deb
