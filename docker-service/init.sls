@@ -2,6 +2,5 @@
 
 {% if 'services' in pillar %}
   - .compose-service
-  - .ecs-service
 {% endif %}
 
