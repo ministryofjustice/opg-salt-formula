@@ -12,12 +12,8 @@
 #  - aws_task
 #  - aws_dns
 
-{%     set service_list = [] %}
-
 {% for service_name in pillar['services'] %}
 {%     if pillar['services'][service_name]['type'] | default('compose') == 'ecs' %}
-{%         do service_list.append(pillar['services'][service_name]) %}
+{%         %}
 {%     endif %}
 {% endfor %}
-
-{{ service_list }}
