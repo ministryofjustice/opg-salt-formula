@@ -1,16 +1,20 @@
-This module is an extension fo the docker compose formula allowing the formula to deliver an ecs service or a docker compose file.
+docker-service
+--------------
 
-The ECS and docker-compose targets are differentiated by a **type** variable determined by the pillar data location.
+This module is an extension of the docker compose formula allowing the formula to deliver an ecs service or a docker compose file.
+
+The ECS and docker-compose targets are differentiated by a **type** variable determined in the pillar **services** tree.
 
 pillar data:
 
 services:
     <service name>: *reqd
-        type: "<compose | ecs>" *reqd (default compose)
-        config-source: *reqd (replaces docker-compose-source)
+        type: "<compose | ecs>" (default to "compose" if not present)
+        config-source: *reqd (replaces docker-compose-source/provides src json for ecs task)
         scripts: (compose only)
         env_files: (compose only)
         extra: (compose only)
+        ecs_cluster: name of ecs cluster to deploy to (ecs only)
         directories:  local dirs to be created
         volumes: volume mapping for container
         elb: elb data (ecs only)
@@ -25,10 +29,11 @@ elb:
 module flow:
 
 1. check if 'services' key exists in pillar
-2. loop over keys in services and extract ecs and compose types into separate dicts/lists
-3. loop over compose types if any
-4. loop over ecs types if any
+2. call compose-service state which will only deploy docker-compose services
+3. call ecs-service state which will only deploy docker services to ecs
 
+
+The ecs service requires a bit more than just a compose file, so will use other aws salt modules to provision the required infrastructure for the service.
         
 ############################
 #legacy docs
