@@ -11,9 +11,3 @@
 #  - aws_service
 #  - aws_task
 #  - aws_dns
-
-{% for service_name in pillar['services'] %}
-{%     if pillar['services'][service_name]['type'] | default('compose') == 'ecs' %}
-{%         %}
-{%     endif %}
-{% endfor %}
