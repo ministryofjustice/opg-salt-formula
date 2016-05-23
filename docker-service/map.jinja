@@ -1,0 +1,8 @@
+{% set services = salt['grains.filter_by']({
+  'compose': {
+    'services': {}
+  },
+  'ecs': {
+    'services': {}
+  }
+}, merge=salt['pillar.get']('services'), default='compose') %}

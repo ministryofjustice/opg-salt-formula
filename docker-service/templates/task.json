@@ -1,0 +1,40 @@
+[
+  {
+    "name": "{{ service_name }}",
+    "image": "{{ service_image }}",
+    "essential": true,
+    "memory": {{ service_memory| default(256) }},
+    "cpu": {{ service_cpu | default(1024) }},
+{%- if service_ports is defined %}
+    "portMappings": [
+{%-   for c_port, h_port, proto in service_ports %}
+      {
+        "containerPort": {{ c_port }},
+        "hostPort": {{ h_port }},
+        "protocol": "{{ proto |default('tcp')"
+      },
+{%-   endfor %}
+      {
+        "containerPort": 80,
+        "hostPort": 80,
+        "protocol": "tcp"
+      },
+      {
+        "containerPort": 443,
+        "hostPort": 443,
+        "protocol": "tcp"
+      }
+    ],
+{%- endif %}
+{%- if mount_points is defined %}
+    "mountPoints": [
+{%-   for vol, path in mount_points %}
+      {
+        "sourceVolume": "{{ vol }}",
+        "containerPath": "{{ path }}"
+      },
+{%-   endfor %}
+    ]
+  }
+{%- endif %}
+]
