@@ -3,4 +3,4 @@ include:
   - admins
   - ntp
   - cron
-  - docker-compose.services
+  - docker-service
