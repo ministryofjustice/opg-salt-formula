@@ -1,5 +1,4 @@
 include:
-  - docker
   - docker-compose
 
 {%  if 'services' in pillar %}
