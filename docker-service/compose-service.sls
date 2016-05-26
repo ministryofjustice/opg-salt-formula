@@ -35,7 +35,7 @@ include:
 
 /etc/init.d/docker-compose-{{service_name}}:
   file.managed:
-    - source: salt://docker-compose/templates/docker-compose-service
+    - source: salt://docker-service/templates/docker-compose-service
     - template: jinja
     - user: root
     - group: root
@@ -58,7 +58,7 @@ docker-compose-{{service_name}}:
 {%         endif %}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
   file.managed:
-    - source: salt://docker-compose/templates/app.env
+    - source: salt://docker-service/templates/app.env
     - template: jinja
     - user: root
     - group: root
@@ -79,7 +79,7 @@ docker-compose-{{service_name}}:
 
 /etc/docker-compose/{{service_name}}/{{app_name}}.env:
   file.managed:
-    - source: salt://docker-compose/templates/app.env
+    - source: salt://docker-service/templates/app.env
     - template: jinja
     - user: root
     - group: root
