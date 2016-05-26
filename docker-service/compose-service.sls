@@ -1,7 +1,8 @@
+include:
+  - docker
+
 /etc/docker-compose:
-  file.directory:
-    - require:
-      - docker
+  file.directory
 
 {% for service_name in pillar['services'] %}
 {%   if pillar['services'][service_name]['type'] | default('compose') == 'compose' %}
