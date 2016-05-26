@@ -3,6 +3,5 @@ include:
   - admins
   - ntp
   - cron
-  - docker
   - docker-service
 

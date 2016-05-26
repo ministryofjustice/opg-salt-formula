@@ -1,3 +1,6 @@
+include:
+  - docker
+
 /etc/docker-compose:
   file.directory
 
