@@ -46,6 +46,3 @@ bootstrap_pkgs:
     - installed
     - pkgs:
       - git
-      - emacs23-nox
-      - joe
-
