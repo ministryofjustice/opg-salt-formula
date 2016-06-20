@@ -1,0 +1,3 @@
+{% set services = salt['grains.filter_by']({
+
+}, merge=pillar['monitoring']['beats'], default='') %}

@@ -1,0 +1,185 @@
+---
+################### Filebeat Configuration Example #########################
+
+############################# Filebeat ######################################
+filebeat:
+  # List of prospectors to fetch data.
+  prospectors:
+    -
+     # Make sure not file is defined twice as this can lead to unexpected behaviour.
+      paths:
+{%- for log_path_regex in pillar['monitoring']['beats']['filebeat']['paths']|default([]) %}
+        - {{ log_path_regex }}
+{% endfor %}
+      encoding: utf-8
+      input_type: log
+      # exclude_lines: ["^DBG"]
+      # include_lines: ["^ERR", "^WARN"]
+      # exclude_files: [".gz$"]
+      #fields:
+      #  level: debug
+      #  review: 1
+      #fields_under_root: false
+      #ignore_older: 0
+      #close_older: 1h
+
+      #document_type: log
+      #scan_frequency: 10s
+      #harvester_buffer_size: 16384
+      #max_bytes: 10485760
+      multiline:
+        pattern: ^\[
+        negate: false
+        match: after
+        max_lines: 500
+        timeout: 5s
+
+      #tail_files: false
+      #backoff: 1s
+      #max_backoff: 10s
+      #backoff_factor: 2
+      #force_close_files: false
+
+    # Additional prospector
+    #-
+      # Configuration to use stdin input
+      #input_type: stdin
+
+  # General filebeat configuration options
+  #spool_size: 2048
+  #publish_async: false
+  #idle_timeout: 5s
+  #registry_file: .filebeat
+  #config_dir:
+
+###############################################################################
+############################# Libbeat Config ##################################
+# Base config file used by all other beats for using libbeat features
+
+############################# Output ##########################################
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+output:
+
+  ### Elasticsearch as output
+  elasticsearch:
+    hosts: ["{{ pillar['monitoring']['beats']['config']['es_host']|default('monitoring') }}:9200"]
+
+    # Optional protocol and basic auth credentials.
+    #protocol: "https"
+    #username: "admin"
+    #password: "s3cr3t"
+
+    #worker: 1
+
+    #index: "filebeat"
+
+    template:
+      name: "filebeat"
+      path: "/etc/filebeat/filebeat.template.json"
+      overwrite: true
+
+    # Optional HTTP Path
+    #path: "/elasticsearch"
+
+    # Proxy server url
+    #proxy_url: http://proxy:3128
+
+    #max_retries: 3
+    #bulk_max_size: 50
+    #timeout: 90
+    #flush_interval: 1
+
+    #save_topology: false
+    #topology_expire: 15
+
+    # tls configuration. By default is off.
+    #tls:
+      # List of root certificates for HTTPS server verifications
+      #certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+      # Certificate for TLS client authentication
+      #certificate: "/etc/pki/client/cert.pem"
+
+      # Client Certificate Key
+      #certificate_key: "/etc/pki/client/cert.key"
+
+      # man-in-the-middle attacks. Use only for testing.
+      #insecure: true
+
+      # Configure cipher suites to be used for TLS connections
+      #cipher_suites: []
+
+      # Configure curve types for ECDHE based cipher suites
+      #curve_types: []
+
+      # Configure minimum TLS version allowed for connection to logstash
+      #min_version: 1.0
+
+      # Configure maximum TLS version allowed for connection to logstash
+      #max_version: 1.2
+
+  ### Console output
+  # console:
+    # Pretty print json event
+    #pretty: false
+
+
+############################# Shipper #########################################
+
+shipper:
+  # The name of the shipper that publishes the network data. It can be used to group
+  # all the transactions sent by a single shipper in the web interface.
+  # If this options is not defined, the hostname is used.
+  #name:
+
+  # The tags of the shipper are included in their own field with each
+  # transaction published. Tags make it easy to group servers by different
+  # logical properties.
+  #tags: ["opg-role", "{{ grains['opg_role'] }}"]
+
+  # Uncomment the following if you want to ignore transactions created
+  # by the server on which the shipper is installed. This option is useful
+  # to remove duplicates if shippers are installed on multiple servers.
+  #ignore_outgoing: true
+
+  # How often (in seconds) shippers are publishing their IPs to the topology map.
+  # The default is 10 seconds.
+  #refresh_topology_freq: 10
+
+  # Expiration time (in seconds) of the IPs published by a shipper to the topology map.
+  # All the IPs will be deleted afterwards. Note, that the value must be higher than
+  # refresh_topology_freq. The default is 15 seconds.
+  #topology_expire: 15
+
+  # Internal queue size for single events in processing pipeline
+  #queue_size: 1000
+
+  # Configure local GeoIP database support.
+  # If no paths are not configured geoip is disabled.
+  #geoip:
+    #paths:
+    #  - "/usr/share/GeoIP/GeoLiteCity.dat"
+    #  - "/usr/local/var/GeoIP/GeoLiteCity.dat"
+
+
+############################# Logging #########################################
+
+# There are three options for the log ouput: syslog, file, stderr.
+# Under Windos systems, the log files are per default sent to the file output,
+# under all other system per default to syslog.
+logging:
+  to_syslog: false
+  to_files: true
+  files:
+    path: /var/log/beats
+    name: filebeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7
+  # Enable debug output for selected components. To enable all selectors use ["*"]
+  # Other available selectors are beat, publish, service
+  # Multiple selectors can be chained.
+  #selectors: [ ]
+  #level: error
+

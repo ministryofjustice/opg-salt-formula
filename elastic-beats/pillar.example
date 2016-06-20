@@ -1,0 +1,7 @@
+monitoring:
+  beats:
+    - filebeat:
+      - paths: [ '/var/log/upstart/*' ]
+    topbeat:
+    config:
+      - es_server: monitoring
