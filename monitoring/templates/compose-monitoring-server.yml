@@ -96,6 +96,7 @@ rabbitmq:
   log_driver: syslog
   ports:
     - 5672:5672
+    - 5671:5671
   env_file: ./rabbitmq.env
 
 
