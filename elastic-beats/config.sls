@@ -8,7 +8,7 @@
 
 /etc/{{ beat }}/{{ beat }}.yml:
   file.managed:
-    - source: templates/{{ beat }}.yml.j2
+    - source: salt://elastic-beats/templates/{{ beat }}.yml.j2
     - template: jinja
     - user: root
     - group: root
