@@ -1,6 +1,6 @@
 monitoring:
   beats:
-    - filebeat:
+    filebeat:
       - paths: [ '/var/log/upstart/*' ]
     topbeat:
     config:
