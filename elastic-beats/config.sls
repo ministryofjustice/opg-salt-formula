@@ -6,7 +6,7 @@
     - watch:
         - file: /etc/{{ beat }}/{{ beat }}.yml
 
-/etc/{{ beat }}/{{ beat }}.yml
+/etc/{{ beat }}/{{ beat }}.yml:
   file.managed:
     - source: templates/{{ beat }}.yml.j2
     - template: jinja
