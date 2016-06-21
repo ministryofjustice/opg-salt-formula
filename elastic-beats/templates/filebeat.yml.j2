@@ -8,9 +8,9 @@ filebeat:
     -
      # Make sure not file is defined twice as this can lead to unexpected behaviour.
       paths:
-{%- for log_path_regex in pillar['monitoring']['beats']['filebeat']['paths']|default([]) %}
+{%- for log_path_regex in salt['pillar.get']('monitoring:beats:filebeat:paths')|default([]) %}
         - {{ log_path_regex }}
-{% endfor %}
+{%- endfor %}
       encoding: utf-8
       input_type: log
       # exclude_lines: ["^DBG"]
@@ -64,7 +64,7 @@ output:
 
   ### Elasticsearch as output
   elasticsearch:
-    hosts: ["{{ pillar['monitoring']['beats']['config']['es_host']|default('monitoring') }}:9200"]
+    hosts: ["{{ salt['pillar.get']('monitoring:beats:config:es_host')|default('monitoring') }}:9200"]
 
     # Optional protocol and basic auth credentials.
     #protocol: "https"
