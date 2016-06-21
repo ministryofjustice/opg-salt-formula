@@ -137,7 +137,7 @@ shipper:
   # The tags of the shipper are included in their own field with each
   # transaction published. Tags make it easy to group servers by different
   # logical properties.
-  #tags: ["opg-role", "{{ grains['opg_role'] }}"]
+  tags: [ "{{ grains['opg_role'] }}", "{{ grains['opg_stackname'] }}", "{{ grains['opg_environment'] }}", "{{ grains['opg_project'] }}" ]
 
   # Uncomment the following if you want to ignore transactions created
   # by the server on which the shipper is installed. This option is useful
