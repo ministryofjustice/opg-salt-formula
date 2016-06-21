@@ -23,7 +23,7 @@ output:
 
   ### Elasticsearch as output
   elasticsearch:
-    hosts: ["{{ pillar['monitoring']['beats']['config']['es_host']|default('monitoring') }}:9200"]
+    hosts: ["{{ salt['pillar.get']('monitoring:beats:config:es_server', 'monitoring') }}:9200"]
     # Optional protocol and basic auth credentials.
     #protocol: "https"
     #username: "admin"
