@@ -5,7 +5,6 @@
   service.running:
     - watch:
         - file: /etc/{{ beat }}/{{ beat }}.yml
-        - file: /etc/{{ beat }}/{{ beat }}.template.json
 
 /etc/{{ beat }}/{{ beat }}.yml:
   file.managed:
