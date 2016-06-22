@@ -1,5 +1,4 @@
-monitoring:
-  beats:
+elastic-beats:
     filebeat:
       - paths: [ '/var/log/upstart/*' ]
     topbeat:

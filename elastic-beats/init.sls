@@ -1,5 +1,5 @@
 {% from "elastic-beats/map.jinja" import beats with context %}
-{% if 'beats' in pillar['monitoring'] %}
+{% if 'elastic-beats' in salt['pillar.get']() %}
 /var/log/beats:
   file.directory
 

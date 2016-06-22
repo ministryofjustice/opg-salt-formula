@@ -23,7 +23,7 @@ output:
 
   ### Elasticsearch as output
   elasticsearch:
-    hosts: ["{{ salt['pillar.get']('monitoring:beats:config:es_server', 'monitoring') }}:9200"]
+    hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:9200"]
     # Optional protocol and basic auth credentials.
     #protocol: "https"
     #username: "admin"
@@ -161,5 +161,5 @@ logging:
 
   # Sets log level. The default log level is error.
   # Available log levels are: critical, error, warning, info, debug
-  #level: error
+  level: info
 

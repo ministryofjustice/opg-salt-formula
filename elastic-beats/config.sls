@@ -1,4 +1,4 @@
-{% set beats = pillar['monitoring']['beats'] %}
+{% set beats = pillar['elastic-beats'] %}
 {%- for beat in beats %}
 {%-   if 'beat' in beat %}
 {{ beat }}:

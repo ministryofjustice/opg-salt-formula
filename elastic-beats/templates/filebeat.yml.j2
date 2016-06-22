@@ -8,7 +8,7 @@ filebeat:
     -
      # Make sure not file is defined twice as this can lead to unexpected behaviour.
       paths:
-{%- for log_path_regex in salt['pillar.get']('monitoring:beats:filebeat:paths', []) %}
+{%- for log_path_regex in salt['pillar.get']('elastic-beats:filebeat:paths', []) %}
         - {{ log_path_regex }}
 {%- endfor %}
       encoding: utf-8
@@ -64,7 +64,7 @@ output:
 
   ### Elasticsearch as output
   elasticsearch:
-    hosts: ["{{ salt['pillar.get']('monitoring:beats:config:es_server', 'monitoring') }}:9200"]
+    hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:9200"]
 
     # Optional protocol and basic auth credentials.
     #protocol: "https"
@@ -181,5 +181,5 @@ logging:
   # Other available selectors are beat, publish, service
   # Multiple selectors can be chained.
   #selectors: [ ]
-  #level: error
+  level: info
 
