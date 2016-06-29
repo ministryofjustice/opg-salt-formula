@@ -41,17 +41,16 @@ elasticsearch:
     - 9300:9300
   env_file: ./elasticsearch.env
   environment:
-    SHARED_DATA_BASE: /tmp
-    SHARED_DATA_PATHS:
-      - /elasticsearchshareddata/beats
+    SHARED_DATA_BASE: '/tmp'
+    SHARED_DATA_PATHS: "['/elasticsearchshareddata/beats']"
     DASHBOARD_SLEEP_TIMEOUT: 90
   volumes:
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-    - /tmp/elasticsearchshareddata
+    - '/tmp/elasticsearchshareddata'
   volumes_from:
-    - elasticsearch-shared-data
+    - 'elasticsearchshareddata'
 
-elasticsearch-shared-data:
+elasticsearchshareddata:
   image: registry.service.dsd.io/opguk/elasticsearch-shared-data:latest
 
 # user/pass: admin/admin
