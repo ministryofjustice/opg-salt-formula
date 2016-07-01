@@ -4,4 +4,5 @@ include:
   - ntp
   - cron
   - docker-service
+  - elastic-beats
 

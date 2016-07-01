@@ -1,0 +1,3 @@
+{% set beats = salt['grains.filter_by']({
+
+}, merge=pillar['elastic-beats'], default='') %}

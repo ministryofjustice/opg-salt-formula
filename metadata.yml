@@ -9,3 +9,4 @@ exports:
 - mongodb
 - mongodb-client
 - monitoring
+- elastic-beats
