@@ -122,6 +122,8 @@ sensuserver:
 sensuapi:
   image: registry.service.dsd.io/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
+  ports:
+    - 4567:4567
   links:
     - redis
     - rabbitmq
