@@ -46,3 +46,7 @@ bootstrap_pkgs:
     - installed
     - pkgs:
       - git
+
+multitail:
+  pkg:
+    - installed
