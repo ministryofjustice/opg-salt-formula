@@ -96,8 +96,9 @@ docker-compose-{{service_name}}:
 
 {%  if pillar['services'][service_name]['extra'] is defined %}
 {%    for env_file in pillar['services'][service_name]['extra'] %}
-{%      set env_name = env_file|replace('_' + grains['opg_role'], '') %}
-{%      if env_name not in pillar['services'][service_name]['env_files'] %}
+{%      if grains['opg_role'] in env_file %}
+{%        set env_name = env_file|replace('_' + grains['opg_role'], '') %}
+{%        if env_name not in pillar['services'][service_name]['env_files'] %}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
   file.managed:
     - source: salt://docker-service/templates/app.env
@@ -108,11 +109,12 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{env_name}}
         service_name: {{service_name}}
-{%       if env_extra is defined %}
+{%       if env_file is defined %}
         env_extra: {{env_file}}
 {%       endif %}
     - watch_in:
       - service: docker-compose-{{service_name}}
+{%        endif %}
 {%      endif %}
 {%    endfor %}
 {%  endif %}
