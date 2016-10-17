@@ -53,7 +53,7 @@ docker-compose-{{service_name}}:
 {%     if pillar['services'][service_name]['env_files'] is defined %}
 {%       for env_name in pillar['services'][service_name]['env_files'] %}
 {%         set env_extra_test = env_name + '_' + grains['opg_role'] %}
-{%         if pillar['services'][service_name]['extra'] is defined and  pillar['services'][service_name]['extra'][env_extra_test] is defined %}
+{%         if pillar['services'][service_name]['extra'] is defined and pillar['services'][service_name]['extra'][env_extra_test] is defined %}
 {%           set env_extra = env_extra_test %}
 {%         endif %}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
@@ -99,7 +99,6 @@ docker-compose-{{service_name}}:
 {%      if grains['opg_role'] in env_file %}
 {%        if env_file|replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] %}
 {%          set env_filename = env_file|replace('_' + grains['opg_role'], '') %}
-{%          set env_extra = pillar['services'][service_name]['extra'][env_file] %}
 /etc/docker-compose/{{service_name}}/{{env_filename}}.env:
   file.managed:
     - source: salt://docker-service/templates/app.env
@@ -110,9 +109,7 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{env_filename}}
         service_name: {{service_name}}
-{%       if env_extra is defined %}
-        env_extra: {{env_extra}}
-{%       endif %}
+        env_extra: {{env_file}}
     - watch_in:
       - service: docker-compose-{{service_name}}
 {%        endif %}
@@ -121,4 +118,3 @@ docker-compose-{{service_name}}:
 {%  endif %}
 
 {% endfor %}
-
