@@ -95,10 +95,12 @@ docker-compose-{{service_name}}:
 {%   endif %}
 
 {%  if pillar['services'][service_name]['extra'] is defined %}
-{%    for env_extra in pillar['services'][service_name]['extra'] %}
+{%    for env_file in pillar['services'][service_name]['extra'] %}
 {%      if grains['opg_role'] in env_file %}
-{%        if replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] %}
-/etc/docker-compose/{{service_name}}/{{env_file}}.env:
+{%        if env_file|replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] %}
+{%          set env_filename = env_file|replace('_' + grains['opg_role'], '') %}
+{%          set env_extra = pillar['services'][service_name]['extra'][env_file] %}
+/etc/docker-compose/{{service_name}}/{{env_filename}}.env:
   file.managed:
     - source: salt://docker-service/templates/app.env
     - template: jinja
@@ -106,7 +108,7 @@ docker-compose-{{service_name}}:
     - group: root
     - mode: 600
     - context:
-        app_name: {{env_name}}
+        app_name: {{env_filename}}
         service_name: {{service_name}}
 {%       if env_extra is defined %}
         env_extra: {{env_extra}}
