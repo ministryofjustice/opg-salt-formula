@@ -94,10 +94,17 @@ docker-compose-{{service_name}}:
 {%     endif %}
 {%   endif %}
 
+# We have an extra section that adds role specific config to an environment file, there are cases whereby
+# this environment file has no common info so will not be created in the env_files section, this below handles this
+# edge case
 {%  if pillar['services'][service_name]['extra'] is defined %}
 {%    for env_file in pillar['services'][service_name]['extra'] %}
+# Does the env file belong to the role, normally it is named envfile_<rolename>
 {%      if grains['opg_role'] in env_file %}
+# Check we haven't written it out already, if we have, it means it existed in the env_files section and we would overwrite
+# the contents
 {%        if env_file|replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] %}
+# Keep our names sane please
 {%          set env_filename = env_file|replace('_' + grains['opg_role'], '') %}
 /etc/docker-compose/{{service_name}}/{{env_filename}}.env:
   file.managed:
@@ -109,6 +116,7 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{env_filename}}
         service_name: {{service_name}}
+# We need the data from the full role_envfile path in yaml
         env_extra: {{env_file}}
     - watch_in:
       - service: docker-compose-{{service_name}}
