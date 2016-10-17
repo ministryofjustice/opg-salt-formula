@@ -4,8 +4,8 @@ include:
 /etc/docker-compose:
   file.directory
 
-{% for service_name in pillar['services'] %}
-{%   if pillar['services'][service_name]['type'] | default('compose') == 'compose' %}
+{% for service_name in pillar['services'] -%}
+{%   if pillar['services'][service_name]['type'] | default('compose') == 'compose' -%}
 
 /etc/docker-compose/{{service_name}}:
   file.directory:
@@ -13,8 +13,8 @@ include:
     - group: root
     - mode: 0755
 
-{%     if 'directories' in pillar['services'][service_name] %}
-{%       for directory in pillar['services'][service_name]['directories'] %}
+{%     if 'directories' in pillar['services'][service_name] -%}
+{%       for directory in pillar['services'][service_name]['directories'] -%}
 
 {{ pillar['services'][service_name]['directories'][directory]['path']}}:
   file.directory:
@@ -22,8 +22,8 @@ include:
     - group: {{ pillar['services'][service_name]['directories'][directory]['group'] | default('root') }}
     - mode:  {{ pillar['services'][service_name]['directories'][directory]['mode'] | default('0755') }}
 
-{%       endfor %}
-{%     endif %}
+{%       endfor -%}
+{%     endif -%}
 
 /etc/docker-compose/{{service_name}}/docker-compose.yml:
   file.managed:
@@ -50,12 +50,12 @@ docker-compose-{{service_name}}:
       - file: /etc/init.d/docker-compose-{{service_name}}
 
 
-{%     if pillar['services'][service_name]['env_files'] is defined %}
-{%       for env_name in pillar['services'][service_name]['env_files'] %}
-{%         set env_extra_test = env_name + '_' + grains['opg_role'] %}
-{%         if pillar['services'][service_name]['extra'] is defined and pillar['services'][service_name]['extra'][env_extra_test] is defined %}
-{%           set env_extra = env_extra_test %}
-{%         endif %}
+{%     if pillar['services'][service_name]['env_files'] is defined -%}
+{%       for env_name in pillar['services'][service_name]['env_files'] -%}
+{%         set env_extra_test = env_name + '_' + grains['opg_role'] -%}
+{%         if pillar['services'][service_name]['extra'] is defined and pillar['services'][service_name]['extra'][env_extra_test] is defined -%}
+{%           set env_extra = env_extra_test -%}
+{%         endif -%}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
   file.managed:
     - source: salt://docker-service/templates/app.env
@@ -66,15 +66,15 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{env_name}}
         service_name: {{service_name}}
-{%       if env_extra is defined %}
+{%       if env_extra is defined -%}
         env_extra: {{env_extra}}
-{%       endif %}
+{%       endif -%}
     - watch_in:
       - service: docker-compose-{{service_name}}
-{%       endfor %}
-{%     else %}
-{%       for app_name in pillar['services'][service_name] %}
-{%         if 'env' in pillar['services'][service_name][app_name] %}
+{%       endfor -%}
+{%     else -%}
+{%       for app_name in pillar['services'][service_name] -%}
+{%         if 'env' in pillar['services'][service_name][app_name] -%}
 
 /etc/docker-compose/{{service_name}}/{{app_name}}.env:
   file.managed:
@@ -89,16 +89,16 @@ docker-compose-{{service_name}}:
     - watch_in:
       - service: docker-compose-{{service_name}}
 
-{%         endif %}
-{%       endfor %}
-{%     endif %}
-{%   endif %}
+{%         endif -%}
+{%       endfor -%}
+{%     endif -%}
+{%   endif -%}
 
-{%  if pillar['services'][service_name]['extra'] is defined %}
-{%    for env_file in pillar['services'][service_name]['extra'] %}
-{%      if grains['opg_role'] in env_file %}
-{%        if env_file|replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] %}
-{%          set env_filename = env_file|replace('_' + grains['opg_role'], '') %}
+{%  if pillar['services'][service_name]['extra'] is defined -%}
+{%    for env_file in pillar['services'][service_name]['extra'] -%}
+{%      if grains['opg_role'] in env_file -%}
+{%        if env_file|replace('_' + grains['opg_role'], '') not in pillar['services'][service_name]['env_files'] -%}
+{%          set env_filename = env_file|replace('_' + grains['opg_role'], '') -%}
 /etc/docker-compose/{{service_name}}/{{env_filename}}.env:
   file.managed:
     - source: salt://docker-service/templates/app.env
@@ -112,9 +112,9 @@ docker-compose-{{service_name}}:
         env_extra: {{env_file}}
     - watch_in:
       - service: docker-compose-{{service_name}}
-{%        endif %}
-{%      endif %}
-{%    endfor %}
-{%  endif %}
+{%        endif -%}
+{%      endif -%}
+{%    endfor -%}
+{%  endif -%}
 
-{% endfor %}
+{% endfor -%}
