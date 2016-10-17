@@ -96,7 +96,7 @@ docker-compose-{{service_name}}:
 {% endfor %}
 {%  if pillar['services'][service_name]['extra'] is defined %}
 {%    for env_file in pillar['services'][service_name]['extra'] %}
-{%      set env_name = env_file|replace)'_' + grains['opg_role'], '') %}
+{%      set env_name = env_file|replace('_' + grains['opg_role'], '') %}
 {%      if env_name not in pillar['services'][service_name]['env_files'] %}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
   file.managed:
