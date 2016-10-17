@@ -93,7 +93,7 @@ docker-compose-{{service_name}}:
 {%       endfor %}
 {%     endif %}
 {%   endif %}
-{% endfor %}
+
 {%  if pillar['services'][service_name]['extra'] is defined %}
 {%    for env_file in pillar['services'][service_name]['extra'] %}
 {%      set env_name = env_file|replace('_' + grains['opg_role'], '') %}
@@ -116,3 +116,6 @@ docker-compose-{{service_name}}:
 {%      endif %}
 {%    endfor %}
 {%  endif %}
+
+{% endfor %}
+
