@@ -53,7 +53,7 @@ docker-compose-{{service_name}}:
 {%     if pillar['services'][service_name]['env_files'] is defined %}
 {%       for env_name in pillar['services'][service_name]['env_files'] %}
 {%         set env_extra_test = env_name + '_' + grains['opg_role'] %}
-{%         if pillar['services'][service_name]['extra'][env_extra_test] is defined %}
+{%         if pillar['services'][service_name]['extra'] is defined and  pillar['services'][service_name]['extra'][env_extra_test] is defined %}
 {%           set env_extra = env_extra_test %}
 {%         endif %}
 /etc/docker-compose/{{service_name}}/{{env_name}}.env:
