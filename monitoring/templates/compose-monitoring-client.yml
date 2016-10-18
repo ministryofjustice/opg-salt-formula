@@ -1,4 +1,4 @@
-{% from "monitoring/map.jinja" import monitoring with context %}
+{% from "monitoring/map.jinja" import monitoring with context -%}
 
 sensuclient:
   image: registry.service.dsd.io/opguk/sensu-client:{{monitoring.version.opg_docker_monitoring}}
@@ -6,16 +6,27 @@ sensuclient:
   ports:
     - 3030:3030
   env_file:
-{%  if salt['pillar.get']('services:monitoring-client:env_files') is defined %}
-{%    for env_name in salt['pillar.get']('services:monitoring-client:env_files') %}
-    - ./{{env_name}}.env
-{%    endfor %}
+{%  set env_files = [] -%}
+{%  if salt['pillar.get']('services:monitoring-client:env_files') is defined -%}
+{%    for env_name in salt['pillar.get']('services:monitoring-client:env_files') -%}
+{%      do env_files.append(env_name) -%}
+{%    endfor -%}
 {%  else %}
-   - ./sensuclient.env
-{%    if salt['pillar.get']('monitoring:client:checksbase:env') %}
-    - ./checksbase.env
-{%    endif %}
-{%    if salt['pillar.get']('monitoring:client:checksrole:env') %}
-    - ./checksrole.env
-{%    endif %}
-{%  endif %}
+{%    do env_files.append('sensuclient') -%}
+{%    if salt['pillar.get']('monitoring:client:checksbase:env') -%}
+{%      do env_files.append('checksbase') -%}
+{%    endif -%}
+{%    if salt['pillar.get']('monitoring:client:checksrole:env') -%}
+{%      do env_files.append('checksrole') -%}
+{%    endif -%}
+{%  endif -%}
+{%  if salt['pillar.get']('services:monitoring-client:extra') is defined -%}
+{%    for env_name in salt['pillar.get']('services:monitoring-client:extra') -%}
+{%      if grains['opg_role'] in env_name -%}
+{%        do env_files.append(env_name|replace('_' + grains['opg_role'], '')) -%}
+{%      endif %}
+{%    endfor -%}
+{%  endif -%}
+{% for env_file in env_files -%}
+{{ '    - ./' +  env_file + '.env'}}
+{% endfor -%}
