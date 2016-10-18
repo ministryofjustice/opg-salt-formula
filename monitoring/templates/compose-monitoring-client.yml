@@ -31,6 +31,6 @@ sensuclient:
 {%-  for env_file in env_files -%}
 {%-    if env_file not in output -%}
 {{ '    - ./' +  env_file + '.env'}}
-{%-      do output.append(env_file) -%}
+{%      do output.append(env_file) -%}
 {%-    endif -%}
 {%- endfor -%}
