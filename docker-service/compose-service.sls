@@ -5,7 +5,9 @@ include:
   file.directory
 
 {% for service_name in pillar['services'] %}
-{%   if pillar['services'][service_name]['type'] | default('compose') == 'compose' %}
+{%-  set service_type = pillar['services'][service_name]['type'] | default('compose') %}
+{%-  set needs_initscript = pillar['services'][service_name]['initscript'] | default('yes') %}
+{%-  if service_type == 'compose' %}
 
 /etc/docker-compose/{{service_name}}:
   file.directory:
@@ -33,6 +35,7 @@ include:
     - group: root
     - mode: 644
 
+{% if needs_initscript| lower == 'yes' %}
 /etc/init.d/docker-compose-{{service_name}}:
   file.managed:
     - source: salt://docker-service/templates/docker-compose-service
@@ -49,6 +52,7 @@ docker-compose-{{service_name}}:
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
 
+{% endif %}
 
 {%     if pillar['services'][service_name]['env_files'] is defined %}
 {%       for env_name in pillar['services'][service_name]['env_files'] %}
