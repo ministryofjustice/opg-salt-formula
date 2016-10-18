@@ -7,30 +7,30 @@ sensuclient:
     - 3030:3030
   env_file:
 {%  set env_files = [] -%}
-{%  if salt['pillar.get']('services:monitoring-client:env_files') is defined -%}
-{%    for env_name in salt['pillar.get']('services:monitoring-client:env_files') -%}
-{%      do env_files.append(env_name) -%}
-{%    endfor -%}
-{%  else %}
-{%    do env_files.append('sensuclient') -%}
-{%    if salt['pillar.get']('monitoring:client:checksbase:env') -%}
-{%      do env_files.append('checksbase') -%}
-{%    endif -%}
-{%    if salt['pillar.get']('monitoring:client:checksrole:env') -%}
-{%      do env_files.append('checksrole') -%}
-{%    endif -%}
-{%  endif -%}
-{%  if salt['pillar.get']('services:monitoring-client:extra') is defined -%}
-{%    for env_name in salt['pillar.get']('services:monitoring-client:extra') -%}
-{%      if grains['opg_role'] in env_name -%}
-{%        do env_files.append(env_name|replace('_' + grains['opg_role'], '')) -%}
-{%      endif %}
-{%    endfor -%}
-{%  endif -%}
-{%  set output = [] -%}
-{%  for env_file in env_files -%}
-{%    if env_file not in output -%}
+{%-  if salt['pillar.get']('services:monitoring-client:env_files') is defined -%}
+{%-    for env_name in salt['pillar.get']('services:monitoring-client:env_files') -%}
+{%-      do env_files.append(env_name) -%}
+{%-    endfor -%}
+{%-  else %}
+{%-    do env_files.append('sensuclient') -%}
+{%-    if salt['pillar.get']('monitoring:client:checksbase:env') -%}
+{%-      do env_files.append('checksbase') -%}
+{%-    endif -%}
+{%-    if salt['pillar.get']('monitoring:client:checksrole:env') -%}
+{%-      do env_files.append('checksrole') -%}
+{%-    endif -%}
+{%-  endif -%}
+{%-  if salt['pillar.get']('services:monitoring-client:extra') is defined -%}
+{%-    for env_name in salt['pillar.get']('services:monitoring-client:extra') -%}
+{%-      if grains['opg_role'] in env_name -%}
+{%-        do env_files.append(env_name|replace('_' + grains['opg_role'], '')) -%}
+{%-      endif %}
+{%-    endfor -%}
+{%-  endif -%}
+{%-  set output = [] -%}
+{%-  for env_file in env_files -%}
+{%-    if env_file not in output -%}
 {{ '    - ./' +  env_file + '.env'}}
-{%      do output.append(env_file) -%}
-{%    endif -%}
-{% endfor -%}
+{%-      do output.append(env_file) -%}
+{%-    endif -%}
+{%- endfor -%}
