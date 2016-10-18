@@ -27,6 +27,6 @@ sensuclient:
 {%      endif %}
 {%    endfor -%}
 {%  endif -%}
-{% for env_file in env_files -%}
+{% for env_file in set(env_files)|list -%}
 {{ '    - ./' +  env_file + '.env'}}
 {% endfor -%}
