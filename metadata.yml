@@ -10,3 +10,4 @@ exports:
 - mongodb-client
 - monitoring
 - elastic-beats
+- salt-key-cleaner
