@@ -1,45 +1,114 @@
 #!/usr/bin/env python
 
 import subprocess
+import os
+import yaml
+import collections
 
 
 def get_containers(arg='-q'):
+    """
+    Returns a list of container ids
+    """
     return docker_command(command='ps', arg=arg)
 
 
 def get_images(arg='-q'):
+    """
+    Returns a list of image ids
+    """
     return docker_command(command='images', arg=arg)
 
 
 def get_list_diff(running, all):
+    """
+    Returns the difference in lists
+    """
     running = set(running)
     return [item for item in all if item not in running]
 
 
-def docker_command(command='ps', arg='-q'):
+def docker_command(command='ps', arg='-q', filter=None):
+    """
+    Runs a docker command
+    """
+    args = ['docker', command, arg]
+
+    if filter is not None:
+        args.append(filter)
+
     result = subprocess.check_output(
-        ['docker', command, arg],
+        args,
         stderr=subprocess.STDOUT
     )
 
     return result
 
-print ("Preparing list of containers")
+
+def get_docker_compose_dirs():
+    """
+    List the docker compose directories, if any
+    """
+    if os.path.isdir('/etc/docker-compose'):
+        return [
+            name for name in os.listdir('/etc/docker-compose')
+            if os.path.isdir(os.path.join('/etc/docker-compose', name))
+        ]
+
+
+def get_referenced_images(dir_list):
+    """
+    Find images referenced in the docker compose files
+    """
+    images = []
+    image_list = []
+
+    if isinstance(dir_list, collections.Iterable):
+        for compose_directory in dir_list:
+            with open(
+                os.path.join(
+                    '/etc/docker-compose',
+                    compose_directory,
+                    'docker-compose.yml'
+                )
+            ) as stream:
+                contents = yaml.load(stream)
+                for key, value in contents.iteritems():
+                    images.append(value['image'])
+
+    for image in images:
+        image_list.append(docker_command(command='images', filter=image))
+
+    return image_list
+
+
+# Entry point
+print ("Preparing list of unused containers")
 running_containers = get_containers().splitlines()
 all_containers = get_containers(arg='-qa').splitlines()
-exited_containers = get_list_diff(all=all_containers, running=running_containers)
+exited_containers = get_list_diff(
+    all=all_containers,
+    running=running_containers
+)
 print ("{} containers to remove".format(len(exited_containers)))
 
 if len(exited_containers):
     for container in exited_containers:
+        print ("Removing container {}".format(container))
         docker_command('rm', container)
 
-print ("Preparing list of images")
+print ("Preparing list of unused images")
 running_images = get_images().splitlines()
 all_images = get_images(arg='-qa').splitlines()
-exited_images = get_list_diff(running=running_images, all=all_images)
-print ("{} images to remove".format(len(exited_images)))
+exited_images = get_list_diff(
+    running=running_images,
+    all=all_images
+)
+referenced_images = get_referenced_images(get_docker_compose_dirs())
+cleanup_images = get_list_diff(running=referenced_images, all=exited_images)
+print ("{} images to remove".format(len(cleanup_images)))
 
-if len(exited_images):
-    for image in exited_images:
+if len(cleanup_images):
+    for image in cleanup_images:
+        print ("Removing image {}".format(container))
         docker_command('rmi -f', image)
