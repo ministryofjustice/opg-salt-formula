@@ -77,7 +77,7 @@ def get_referenced_images(dir_list):
                     images.append(value['image'])
 
     for image in images:
-        image_list.append(docker_command(command='images', filter=image))
+        image_list.append(docker_command(command='images', filter=image).rstrip())
 
     return image_list
 
@@ -98,17 +98,12 @@ if len(exited_containers):
         docker_command('rm', container)
 
 print ("Preparing list of unused images")
-running_images = get_images().splitlines()
-all_images = get_images(arg='-qa').splitlines()
-exited_images = get_list_diff(
-    running=running_images,
-    all=all_images
-)
+all_images = get_images().splitlines()
 referenced_images = get_referenced_images(get_docker_compose_dirs())
-cleanup_images = get_list_diff(running=referenced_images, all=exited_images)
+cleanup_images = get_list_diff(running=referenced_images, all=all_images)
 print ("{} images to remove".format(len(cleanup_images)))
 
 if len(cleanup_images):
     for image in cleanup_images:
-        print ("Removing image {}".format(container))
-        docker_command('rmi -f', image)
+        print ("Removing image {}".format(image))
+        docker_command(command='rmi', arg=image)
