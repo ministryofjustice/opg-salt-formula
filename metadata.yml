@@ -5,6 +5,7 @@ exports:
 - bootstrap
 - admins
 - docker
+- docker-cleaner
 - docker-service
 - mongodb
 - mongodb-client
