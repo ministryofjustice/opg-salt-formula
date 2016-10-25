@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import subprocess
+
+
+def get_containers(arg='-q'):
+    return docker_command(command='ps', arg=arg)
+
+
+def get_images(arg='-q'):
+    return docker_command(command='images', arg=arg)
+
+
+def get_list_diff(running, all):
+    running = set(running)
+    return [item for item in all if item not in running]
+
+
+def docker_command(command='ps', arg='-q'):
+    result = subprocess.check_output(
+        ['docker', command, arg],
+        stderr=subprocess.STDOUT
+    )
+
+    return result
+
+print ("Preparing list of containers")
+running_containers = get_containers().splitlines()
+all_containers = get_containers(arg='-qa').splitlines()
+exited_containers = get_list_diff(all=all_containers, running=running_containers)
+print ("{} containers to remove".format(len(exited_containers)))
+
+if len(exited_containers):
+    for container in exited_containers:
+        docker_command('rm', container)
+
+print ("Preparing list of images")
+running_images = get_images().splitlines()
+all_images = get_images(arg='-qa').splitlines()
+exited_images = get_list_diff(running=running_images, all=all_images)
+print ("{} images to remove".format(len(exited_images)))
+
+if len(exited_images):
+    for image in exited_images:
+        docker_command('rmi -f', image)
