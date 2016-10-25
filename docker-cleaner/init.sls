@@ -14,6 +14,6 @@ docker-image-cleaner-cron-job:
     - identifier: Docker housekeeping
     - user: root
     - minute: 0
-    - hour: '*/4'
+    - hour: 1
     - require:
       - file: /usr/local/sbin/docker-image-cleaner
