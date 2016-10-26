@@ -1,3 +1,10 @@
+/usr/local/sbin/docker-image-cleaner:
+  file.managed:
+    - source: salt://docker-cleaner/files/clean-docker-images
+    - user: root
+    - group: root
+    - mode: 755
+
 # Periodically execute script to clean old keys on the Minion Master.
 docker-image-cleaner-cron-job:
   cron.present:
