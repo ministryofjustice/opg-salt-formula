@@ -5,10 +5,8 @@ include:
   file.directory
 
 {% for service_name in pillar['services'] %}
-{%-  set service_type = pillar['services'][service_name]['type'] | default('compose') %}
-{%-  set needs_initscript = pillar['services'][service_name]['initscript'] | default('yes') %}
-{%-  if service_type == 'compose' %}
-
+{%   if pillar['services'][service_name]['type'] | default('compose') == 'compose' %}
+{%     set initscript = pillar['services'][service_name]['initscript'] | default('yes') %}
 /etc/docker-compose/{{service_name}}:
   file.directory:
     - user: root
@@ -34,8 +32,7 @@ include:
     - user: root
     - group: root
     - mode: 644
-
-{% if needs_initscript| lower == 'yes' %}
+{%     if initscript == 'yes' %}
 /etc/init.d/docker-compose-{{service_name}}:
   file.managed:
     - source: salt://docker-service/templates/docker-compose-service
@@ -51,8 +48,7 @@ docker-compose-{{service_name}}:
     - enable: True
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
-
-{% endif %}
+{%     endif %}
 
 {%     if pillar['services'][service_name]['env_files'] is defined %}
 {%       for env_name in pillar['services'][service_name]['env_files'] %}
@@ -73,8 +69,10 @@ docker-compose-{{service_name}}:
 {%       if env_extra is defined %}
         env_extra: {{env_extra}}
 {%       endif %}
+{%       if initscript == 'yes' %}
     - watch_in:
       - service: docker-compose-{{service_name}}
+{%       endif %}
 {%       endfor %}
 {%     else %}
 {%       for app_name in pillar['services'][service_name] %}
@@ -90,8 +88,10 @@ docker-compose-{{service_name}}:
     - context:
         app_name: {{app_name}}
         service_name: {{service_name}}
+{%       if initscript == 'yes' %}
     - watch_in:
       - service: docker-compose-{{service_name}}
+{%       endif %}
 
 {%         endif %}
 {%       endfor %}
@@ -122,8 +122,10 @@ docker-compose-{{service_name}}:
         service_name: {{service_name}}
 # We need the data from the full role_envfile path in yaml
         env_extra: {{env_file}}
+{%       if initscript == 'yes' %}
     - watch_in:
       - service: docker-compose-{{service_name}}
+{%       endif %}
 {%        endif %}
 {%      endif %}
 {%    endfor %}
