@@ -11,6 +11,7 @@ services:
     <service name>: *reqd
         type: "<compose | ecs>" (default to "compose" if not present)
         config-source: *reqd (replaces docker-compose-source/provides src json for ecs task)
+        initscript: (compose only)
         scripts: (compose only)
         env_files: (compose only)
         extra: (compose only)
@@ -32,11 +33,11 @@ module flow:
 2. call compose-service state which will only deploy docker-compose services
 3. call ecs-service state which will only deploy docker services to ecs
 
-
+# TODO
 The ecs service requires a bit more than just a compose file, so will use other aws salt modules to provision the required infrastructure for the service.
         
 ############################
-#legacy docs
+# docker compose service
 # docker-compose-formula
 Saltstack formula for managing docker compose services and supporting directories via pillar data
 
@@ -103,3 +104,19 @@ services:
 ```
 
 The names under the `extra` section are simply `env_file_name`_`grain`.
+
+## Sample Pillar Data - Disable service configuration ##
+
+```yml
+services:
+  admin-tasks:
+    docker-compose-source: salt://service-master/templates/docker-compose.yml
+    initscript: no
+    scripts:
+      env:
+        MONITORING_ENABLED: True
+        OPG_SERVICE: scripts
+        EBS_SNAPSHOT_RETENTION_DAYS: 8
+        EBS_SNAPSHOT_MONITOR_HOST: monitoring
+        EBS_SNAPSHOT_MONITOR_PORT: 2003
+```
