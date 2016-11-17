@@ -1,7 +1,8 @@
 {% from "monitoring/map.jinja" import monitoring with context %}
+{% set registry_url = salt['pillar.get']('docker_registry_url','registry.service.opg.digital') %}
 
 router:
-  image: registry.service.dsd.io/opguk/nginx-router:{{monitoring.version.opg_docker}}
+  image: {{ registry_url }}/opguk/nginx-router:{{monitoring.version.opg_docker}}
   log_driver: syslog
   ports:
     - 80:80
@@ -24,7 +25,7 @@ router:
 
 
 kibana:
-  image: registry.service.dsd.io/opguk/kibana:{{monitoring.version.opg_docker}}
+  image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
   log_driver: syslog
   links:
     - elasticsearch
@@ -33,7 +34,7 @@ kibana:
 
 # data on volume
 elasticsearch:
-  image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker}}
+  image: {{ registry_url }}/opguk/elasticsearch:{{monitoring.version.opg_docker}}
   log_driver: syslog
   mem_limit: 5000000000
   ports:
@@ -51,11 +52,11 @@ elasticsearch:
     - 'elasticsearchshareddata'
 
 elasticsearchshareddata:
-  image: registry.service.dsd.io/opguk/elasticsearch-shared-data:latest
+  image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
 
 # user/pass: admin/admin
 grafana:
-  image: registry.service.dsd.io/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   links:
     - graphite
@@ -65,7 +66,7 @@ grafana:
 
 
 logstash:
-  image: registry.service.dsd.io/opguk/logstash:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/logstash:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   ports:
     - 2514:2514/udp
@@ -88,7 +89,7 @@ redis:
 
 # data on volume
 graphite:
-  image: registry.service.dsd.io/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   ports:
     - 2003:2003
@@ -101,7 +102,7 @@ graphite:
 
 
 rabbitmq:
-  image: registry.service.dsd.io/opguk/rabbitmq:{{monitoring.version.opg_docker}}
+  image: {{ registry_url }}/opguk/rabbitmq:{{monitoring.version.opg_docker}}
   log_driver: syslog
   ports:
     - 5672:5672
@@ -110,7 +111,7 @@ rabbitmq:
 
 
 sensuserver:
-  image: registry.service.dsd.io/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   links:
     - redis
@@ -120,7 +121,7 @@ sensuserver:
 
 
 sensuapi:
-  image: registry.service.dsd.io/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   ports:
     - 4567:4567
@@ -131,7 +132,7 @@ sensuapi:
 
 
 uchiwa:
-  image: registry.service.dsd.io/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   links:
     - sensuapi
@@ -139,7 +140,7 @@ uchiwa:
   env_file: ./uchiwa.env
 
 #elasticcurator:
-#  image: registry.service.dsd.io/opguk/elasticsearch:{{monitoring.version.opg_docker_monitoring}}
+#  image: {{ registry_url }}/opguk/elasticsearch:{{monitoring.version.opg_docker_monitoring}}
 #  external_links:
 #    - monitoringserver_elasticsearch_1:elasticsearch
 #  env_file: ./elasticsearch.env
