@@ -1,5 +1,5 @@
 {% from "monitoring/map.jinja" import monitoring with context %}
-{% set registry_url = salt['pillar.get']('docker_registry_url','registry.service.opg.digital') %}
+{% set registry_url = salt['pillar.get']('docker_registry_url','') %}
 
 router:
   image: {{ registry_url }}/opguk/nginx-router:{{monitoring.version.opg_docker}}
