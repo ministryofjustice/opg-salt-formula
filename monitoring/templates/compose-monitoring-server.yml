@@ -1,7 +1,7 @@
 {% from "monitoring/map.jinja" import monitoring with context %}
 {% set registry_url = salt['pillar.get']('docker_registry_url','') %}
 {% set remote_elastic = salt['pillar.get']('monitoring:remote_es','no') %}
-version: '2'
+#version: '2'
 router:
   image: {{ registry_url }}/opguk/nginx-router:{{monitoring.version.opg_docker}}
   log_driver: syslog
