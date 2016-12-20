@@ -1,5 +1,6 @@
 {% from "monitoring/map.jinja" import monitoring with context %}
 {% set registry_url = salt['pillar.get']('docker_registry_url','') %}
+{% set remote_elastic = salt['pillar.get']('monitoring:remote_es','no')}
 
 router:
   image: {{ registry_url }}/opguk/nginx-router:{{monitoring.version.opg_docker}}
@@ -27,14 +28,17 @@ router:
 kibana:
   image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
   log_driver: syslog
+{% if remote_elastic == 'no' -%}
   links:
     - elasticsearch
+{% endif -%}
   env_file: ./kibana.env
 
+{% if remote_elastic == 'no' -%}
 
 # data on volume
 elasticsearch:
-  image: {{ registry_url }}/opguk/elasticsearch:{{monitoring.version.opg_docker}}
+  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
   log_driver: syslog
   mem_limit: 5000000000
   ports:
@@ -54,6 +58,7 @@ elasticsearch:
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
 
+{% endif -%}
 # user/pass: admin/admin
 grafana:
   image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
@@ -73,7 +78,9 @@ logstash:
     - 2514:2514
   links:
     - redis
+{% if remote_elastic == 'no' -%}
     - elasticsearch
+{% endif -%}
     - graphite
   env_file: ./logstash.env
 
@@ -139,8 +146,10 @@ uchiwa:
     - sensuserver
   env_file: ./uchiwa.env
 
+{% if remote_elastic == 'no' -%}
 #elasticcurator:
 #  image: {{ registry_url }}/opguk/elasticsearch:{{monitoring.version.opg_docker_monitoring}}
 #  external_links:
 #    - monitoringserver_elasticsearch_1:elasticsearch
 #  env_file: ./elasticsearch.env
+{% endif -%}
