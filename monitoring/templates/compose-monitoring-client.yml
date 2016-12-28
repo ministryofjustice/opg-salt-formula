@@ -36,23 +36,3 @@ sensuclient:
 {%      do output.append(env_file) -%}
 {%-    endif -%}
 {%- endfor -%}
-
-#{%- if salt['pillar.get']('services:monitoring-client:env_files:dockbeats') is defined -%}
-#dockbeat-client:
-#  image: {{ registry_url }}/opguk/dockbeat-client:{{monitoring.version.opg_docker_monitoring}}
-#  log_driver: syslog
-#  env_file:
-#{%  set env_files = [] -%}
-#{%-  if salt['pillar.get']('services:monitoring-client:env_files:dockbeats') is defined -%}
-#{%-    for env_name in salt['pillar.get']('services:dockbeats:env_files') -%}
-#{%-      do env_files.append(env_name) -%}
-#{%-    endfor -%}
-#{%-  endif %}
-#{%-  set output = [] -%}
-#{%-  for env_file in env_files -%}
-#{%-    if env_file not in output -%}
-#{{ '    - ./' +  env_file + '.env'}}
-#{%      do output.append(env_file) -%}
-#{%-    endif -%}
-#{%- endfor -%}
-#{%- endif -%}

@@ -1,0 +1,7 @@
+{% set dockbeat = salt['grains.filter_by']({
+  'Ubuntu': {
+    'version': {
+      'opg_docker_monitoring': 'latest',
+      'opg_docker': 'latest'
+    }
+}, merge=salt['pillar.get']('monitoring'), default='Ubuntu') %}
