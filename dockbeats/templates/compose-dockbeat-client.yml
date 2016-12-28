@@ -1,8 +1,8 @@
-{% from "dockbeats/map.jinja" import monitoring with context -%}
 {% set registry_url = salt['pillar.get']('docker_registry_url','') %}
+{% set monitoring_version = salt['pillar.get']('monitoring:version:opg_docker_monitoring','latest') %}
 
 dockbeat-client:
-  image: {{ registry_url }}/opguk/dockbeat-client:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/dockbeat-client:{{monitoring_version}}
   log_driver: syslog
   env_file:
 {%  set env_files = [] -%}
