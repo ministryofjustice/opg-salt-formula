@@ -1,8 +1,9 @@
 {% from "monitoring/map.jinja" import monitoring with context -%}
 {% set registry_url = salt['pillar.get']('docker_registry_url','') %}
+#version: '2'
 
 sensuclient:
-  image: {{ registry_url }}/opguk/sensu-client:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/sensu-client:{{ monitoring.version.opg_docker_monitoring }}
   log_driver: syslog
   ports:
     - 3030:3030
