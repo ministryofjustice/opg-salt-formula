@@ -5,6 +5,7 @@ dockbeat-client:
   image: {{ registry_url }}/opguk/dockbeat-client:{{monitoring_version}}
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/var/log/beats:/var/log/beats"
   log_driver: syslog
   env_file:
 {%  set env_files = [] -%}
