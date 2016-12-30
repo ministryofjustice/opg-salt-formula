@@ -2,7 +2,7 @@
 {% set monitoring_version = salt['pillar.get']('monitoring:version:opg_docker_monitoring','latest') %}
 
 dockbeat-client:
-  image: {{ registry_url }}/opguk/dockbeat-client:{{monitoring_version}}
+  image: {{ registry_url }}/opguk/dockbeat-client:{{ monitoring_version }}
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "/var/log/beats:/var/log/beats"
