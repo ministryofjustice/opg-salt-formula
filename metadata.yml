@@ -11,4 +11,3 @@ exports:
 - mongodb-client
 - monitoring
 - elastic-beats
-- dockbeats
