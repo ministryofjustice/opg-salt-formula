@@ -58,7 +58,30 @@ elasticsearch:
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
 
+{%- else %}
+elasticsearchcoord:
+  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  mem_limit: 5000000000
+  ports:
+    - 9200:9200
+    - 9300:9300
+  env_file: ./elasticsearchcoord.env
+  environment:
+       ELASTICSEARCH_NODE_TYPE: 'coord'
+
 {% endif -%}
+
+elasticsearchingest:
+  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  mem_limit: 5000000000
+  ports:
+    - 9201:9200
+  env_file: ./elasticsearchingest.env
+  environment:
+    ELASTICSEARCH_NODE_TYPE: 'ingest'
+
 # user/pass: admin/admin
 grafana:
   image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
