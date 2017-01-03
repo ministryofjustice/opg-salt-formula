@@ -89,9 +89,7 @@ logstash:
     - 2514:2514
   links:
     - redis
-{% if remote_elastic == 'no' %}
     - elasticsearch
-{% endif %}
     - graphite
   env_file: ./logstash.env
 
