@@ -62,7 +62,8 @@ elasticsearch:
   log_driver: syslog
   mem_limit: 5000000000
   ports:
-    - 9201:9200
+    - 9200:9200
+    - 9300:9300
   env_file: ./elasticsearch.env
   environment:
     ELASTICSEARCH_NODE_TYPE: 'ingest'
