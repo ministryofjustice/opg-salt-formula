@@ -28,9 +28,12 @@ router:
 kibana:
   image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
   log_driver: syslog
-{% if remote_elastic == 'no' -%}
+
   links:
+{% if remote_elastic == 'no' -%}
     - elasticsearch
+{% else %}
+    - elasticsearchcoord
 {% endif %}
   env_file: ./kibana.env
 
