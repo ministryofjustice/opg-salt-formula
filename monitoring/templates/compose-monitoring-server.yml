@@ -28,10 +28,8 @@ router:
 kibana:
   image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
   log_driver: syslog
-{% if remote_elastic == 'no' -%}
   links:
     - elasticsearch
-{% endif %}
   env_file: ./kibana.env
 
 {% if remote_elastic == 'no' -%}
@@ -58,7 +56,20 @@ elasticsearch:
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
 
+{%- else %}
+elasticsearch:
+  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
+  log_driver: syslog
+  mem_limit: 5000000000
+  ports:
+    - 9200:9200
+    - 9300:9300
+  env_file: ./elasticsearch.env
+  environment:
+    ELASTICSEARCH_NODE_TYPE: 'ingest'
+
 {% endif -%}
+
 # user/pass: admin/admin
 grafana:
   image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
@@ -78,9 +89,7 @@ logstash:
     - 2514:2514
   links:
     - redis
-{% if remote_elastic == 'no' %}
     - elasticsearch
-{% endif %}
     - graphite
   env_file: ./logstash.env
 
