@@ -49,12 +49,12 @@ elasticsearch:
     DASHBOARD_SLEEP_TIMEOUT: 90
   volumes:
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-    - '/tmp/elasticsearchshareddata'
-  volumes_from:
-    - 'elasticsearchshareddata'
-
-elasticsearchshareddata:
-  image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
+#    - '/tmp/elasticsearchshareddata'
+#  volumes_from:
+#    - 'elasticsearchshareddata'
+#
+#elasticsearchshareddata:
+#  image: {{ registry_url }}/opguk/elasticsearch-shared-data:latest
 
 {%- else %}
 elasticsearch:
