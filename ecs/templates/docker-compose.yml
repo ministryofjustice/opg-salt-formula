@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  ecs-agent:
+    image: amazon-ecs-agent
+    log_driver: syslog
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/log/ecs:/log
+      - /var/lib/ecs/data:/data
+    env_file: ./ecs.env
+    net: host
