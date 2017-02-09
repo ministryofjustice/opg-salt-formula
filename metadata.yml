@@ -11,3 +11,4 @@ exports:
 - mongodb-client
 - monitoring
 - elastic-beats
+- ecs
