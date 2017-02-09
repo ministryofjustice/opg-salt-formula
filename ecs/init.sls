@@ -31,3 +31,15 @@ iptables-redirect:
 #    - group: root
 #    - mode: 644
 
+/nfsdata:
+  mount.mounted:
+    - device: nfs-01:/data
+    - fstype: nfs
+    - mkmnt: True
+    - persist: True
+    - opts:
+      - soft
+      - intr
+      - rsize=1048576
+      - wsize=1048576
+
