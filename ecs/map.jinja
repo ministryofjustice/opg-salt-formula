@@ -1,4 +1,4 @@
-{% set beats = salt['grains.filter_by']({
+{% set config = salt['grains.filter_by']({
     'Ubuntu-14.04': {
         'agent_dirs': [
             '/etc/ecs',
