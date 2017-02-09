@@ -1,0 +1,3 @@
+{% for k, v in salt['pillar.get']('ecs:config', '') %}
+{{ k }}={{ v }}
+{% endfor %}
