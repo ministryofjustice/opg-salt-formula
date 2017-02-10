@@ -5,6 +5,7 @@
             '/var/log/ecs',
             '/var/lib/ecs/data'
          ],
-        'config_file': '/etc/ecs/ecs.config'
+        'config_file': '/etc/ecs/ecs.config',
+        'nfs_pkg': 'nfs-common'
     }
 }, grain='osfinger', merge=salt.pillar.get('ecs'), default='Ubuntu-14.04') %}

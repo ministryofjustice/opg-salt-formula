@@ -7,7 +7,7 @@
 
 {%- endfor %}
 
-nfs-utils:
+{{ config.nfs_pkg }}:
   pkg.installed
 
 net.ipv4.conf.all.route_localnet:
