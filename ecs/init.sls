@@ -14,7 +14,7 @@ net.ipv4.conf.all.route_localnet:
     sysctl.present:
       - value: 1
 
-ecs:
+ecs-dnat:
   iptables.append:
     - table: nat
     - chain: PREROUTING
@@ -25,7 +25,7 @@ ecs:
     - protocol: tcp
     - save: True
 
-ecs:
+ecs-redirect:
   iptables.append:
     - table: nat
     - chain: PREROUTING
