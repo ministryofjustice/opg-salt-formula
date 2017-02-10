@@ -1,6 +1,6 @@
 {% from "ecs/map.jinja" import ecs with context -%}
 
-{% for dir in config.agent_dirs %}
+{% for dir in ecs.agent_dirs %}
 {{ dir }}:
   file.directory
 
@@ -23,7 +23,7 @@ iptables-redirect:
     - rule: "-d 169.254.170.2 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 51679"
     - save: True
 
-#{{ config.config_file }}:
+#{{ ecs.config_file }}:
 #  file.managed:
 #    - source: salt://ecs/templates/ecs.config.j2
 #    - template: jinja
