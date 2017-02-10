@@ -1,6 +1,6 @@
-{% from "ecs/map.jinja" import ecs with context -%}
+{% from "ecs/map.jinja" import config with context -%}
 
-{% for dir in ecs.agent_dirs %}
+{% for dir in config.agent_dirs %}
 {{ dir }}:
   file.directory
 
