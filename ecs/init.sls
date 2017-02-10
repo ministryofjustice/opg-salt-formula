@@ -23,14 +23,6 @@ iptables-redirect:
     - rule: "-d 169.254.170.2 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 51679"
     - save: True
 
-{{ ecs.config_file }}:
-  file.managed:
-    - source: salt://ecs/templates/ecs.config.j2
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 644
-
 /nfsdata:
   mount.mounted:
     - device: nfs-01:/data
