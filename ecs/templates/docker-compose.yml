@@ -8,6 +8,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/log/ecs:/log
       - /var/lib/ecs/data:/data
+    enviroment:
+      - ECS_AUTH_DATA: {{ salt['pillar.get']('docker-registries', 'luthu')|json}}
     env_file: ./ecs.env
     network_mode: "host"
 #  registrator:

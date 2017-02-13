@@ -19,7 +19,8 @@
     - template: jinja
 
 rpcbind:
-  service.started
+  service:
+    - running
 
 net.ipv4.conf.all.route_localnet:
     sysctl.present:
