@@ -3,15 +3,19 @@ version: '2'
 services:
   ecs-agent:
     image: amazon/amazon-ecs-agent
-    log_driver: syslog
+    logging:
+        driver: syslog
+        options:
+          syslog-address: "tcp://monitoring:2514"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/log/ecs:/log
       - /var/lib/ecs/data:/data
-    enviroment:
-      - ECS_AUTH_DATA: {{ salt['pillar.get']('docker-registries', 'luthu')|json}}
+
     env_file: ./ecs.env
     network_mode: "host"
+    environment:
+      ECS_AUTH_DATA: {{ salt['pillar.get']('docker-registries')|json}}
 #  registrator:
 #  consul:
 
