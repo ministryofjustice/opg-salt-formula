@@ -10,7 +10,7 @@
 {{ config.nfs_pkg }}:
   pkg.installed
 
-/etc/defaults/nfs-common:
+/etc/default/nfs-common:
   file.managed:
     - source: salt://files/nfs-common
     - user: root
