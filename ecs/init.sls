@@ -10,6 +10,17 @@
 {{ config.nfs_pkg }}:
   pkg.installed
 
+/etc/defaults/nfs-common:
+  file.managed:
+    - source: salt://files/nfs-common
+    - user: root
+    - group: root
+    - mode: 0644
+    - template: jinja
+
+rpcbind:
+  service.started
+
 net.ipv4.conf.all.route_localnet:
     sysctl.present:
       - value: 1
