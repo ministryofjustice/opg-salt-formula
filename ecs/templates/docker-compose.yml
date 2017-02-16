@@ -15,7 +15,7 @@ services:
     env_file: ./ecs.env
     network_mode: "host"
     environment:
-      ECS_AUTH_DATA: {{ salt['pillar.get']('docker-registries')|json}}
+      ECS_AUTH_DATA: '{{ salt["pillar.get"]("docker-registries")|json}}'
 #  registrator:
 #  consul:
 
