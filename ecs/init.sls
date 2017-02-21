@@ -12,7 +12,7 @@
 
 /etc/default/nfs-common:
   file.managed:
-    - source: salt://files/nfs-common
+    - source: salt://ecs/files/nfs-common
     - user: root
     - group: root
     - mode: 0644
@@ -47,6 +47,14 @@ ecs-redirect:
     - to-ports: 51679
     - protocol: tcp
     - save: True
+
+/etc/ecs/ecs.config:
+  file.managed:
+    - source: salt://ecs/templates/ecs.config
+    - user: root
+    - group: root
+    - mode: 0600
+    - template: jinja
 
 /nfsdata:
   mount.mounted:

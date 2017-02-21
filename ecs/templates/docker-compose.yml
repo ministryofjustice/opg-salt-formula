@@ -12,10 +12,9 @@ services:
       - /var/log/ecs:/log
       - /var/lib/ecs/data:/data
 
-    env_file: ./ecs.env
+#    env_file: ./ecs.env
     network_mode: "host"
-    environment:
-      ECS_AUTH_DATA: '{{ salt["pillar.get"]("docker-registries")|json}}'
+
 #  registrator:
 #  consul:
 
