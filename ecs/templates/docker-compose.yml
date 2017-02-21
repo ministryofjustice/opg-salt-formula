@@ -12,7 +12,7 @@ services:
       - /var/log/ecs:/log
       - /var/lib/ecs/data:/data
 
-#    env_file: ./ecs.env
+    env_file: /etc/ecs/ecs.config
     network_mode: "host"
 
 #  registrator:
