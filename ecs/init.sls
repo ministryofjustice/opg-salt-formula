@@ -1,32 +1,66 @@
-{% from "ecs/map.jinja" import ecs with context -%}
+{% from "ecs/map.jinja" import config with context -%}
 
-{% for dir in ecs_agent_dirs %}
+{% for dir in config.agent_dirs %}
 {{ dir }}:
-  file.directory
+  file.directory:
+    - makedirs: True
 
 {%- endfor %}
 
+{{ config.nfs_pkg }}:
+  pkg.installed
+
+/etc/default/nfs-common:
+  file.managed:
+    - source: salt://ecs/files/nfs-common
+    - user: root
+    - group: root
+    - mode: 0644
+    - template: jinja
+
+rpcbind:
+  service:
+    - running
 
 net.ipv4.conf.all.route_localnet:
     sysctl.present:
       - value: 1
 
-iptables-dnat:
+ecs-dnat:
   iptables.append:
     - table: nat
-    - rule: "-p tcp -d 169.254.170.2 --dport 80 -j DNAT --to-destination 127.0.0.1:51679"
+    - chain: PREROUTING
+    - jump: DNAT
+    - destination: 169.254.170.2
+    - dport: 80
+    - to-destination: "127.0.0.1:51679"
+    - protocol: tcp
     - save: True
 
-iptables-redirect:
+ecs-redirect:
   iptables.append:
     - table: nat
-    - rule: "-d 169.254.170.2 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 51679"
+    - chain: PREROUTING
+    - jump: REDIRECT
+    - destination: 169.254.170.2
+    - dport: 80
+    - to-ports: 51679
+    - protocol: tcp
     - save: True
 
-{{ ecs_config_file }}:
+/etc/ecs/ecs.config:
   file.managed:
-    - source: salt://ecs/templates/ecs.config.j2
-    - template: jinja
+    - source: salt://ecs/templates/ecs.config
     - user: root
     - group: root
-    - mode: 644
+    - mode: 0600
+    - template: jinja
+
+/nfsdata:
+  mount.mounted:
+    - device: nfs-01:/data
+    - fstype: nfs
+    - mkmnt: True
+    - persist: True
+    - opts: _netdev,soft,intr,rsize=1048576,wsize=1048576
+

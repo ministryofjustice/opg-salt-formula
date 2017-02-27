@@ -1,10 +1,11 @@
-{% set beats = salt['grains.filter_by']({
+{% set config = salt['grains.filter_by']({
     'Ubuntu-14.04': {
-        'ecs_agent_dirs': [
-          '/etc/ecs',
-          '/var/log/ecs',
-          '/var/lib/ecs/data'
-          ],
-        'ecs_config_file': '/etc/ecs/ecs.config'
+        'agent_dirs': [
+            '/etc/ecs',
+            '/var/log/ecs',
+            '/var/lib/ecs/data'
+         ],
+        'config_file': '/etc/ecs/ecs.config',
+        'nfs_pkg': 'nfs-common'
     }
 }, grain='osfinger', merge=salt.pillar.get('ecs'), default='Ubuntu-14.04') %}
