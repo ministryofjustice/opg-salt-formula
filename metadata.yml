@@ -12,3 +12,4 @@ exports:
 - monitoring
 - elastic-beats
 - ecs
+- pgsql-client
