@@ -11,3 +11,13 @@ pgsql-client:
     - user: root
     - group: root
     - template: jinja
+
+{%- set pg_root = salt['pillar.get']('services:front:test:env', []) %}
+
+pgsql-environment:
+  environ.setenv:
+     - name: env_for_pgsql
+     - value:
+         PGDATABASE: {{ pg_root.API_DATABASE_NAME }}
+         PGUSER: {{ pg_root.API_DATABASE_USERNAME }}
+         PGHOST: {{ pg_root.API_DATABASE_HOSTNAME }}
