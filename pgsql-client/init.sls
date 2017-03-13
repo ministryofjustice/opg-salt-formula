@@ -12,6 +12,14 @@ pgsql-client:
     - group: root
     - template: jinja
 
+/root/backup_postgres.sh:
+  file.managed:
+    - source: salt://pgsql-client/templates/backup.sh
+    - mode: 0700
+    - user: root
+    - group: root
+    - template: jinja
+
 {%- set pg_root = salt['pillar.get']('services:front:test:env', []) %}
 pgsql-environment:
   file.append:
