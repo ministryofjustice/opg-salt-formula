@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-source /root/bashrc
-DATESTAMP=`date "+%d%m%Y"`
+set -o allexport
+. /root/.bash_profile
+export PGPASSFILE=/root/.pgpass
+set +o allexport
 
-pgdump --clean --inserts | sed '/EXTENSION/d' > /tmp/${PGDATABASE}_${DATESTAMP}.sql
+DATE_STAMP=`date "+%d%m%Y"`
+echo "Writing backup to /tmp/${PGDATABASE}_${DATE_STAMP}.sql"
+pg_dump --clean --inserts | sed '/EXTENSION/d' > /tmp/${PGDATABASE}_${DATE_STAMP}.sql
+echo "Done"
+
