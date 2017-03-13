@@ -1,6 +1,6 @@
 # See https://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
 {%- set pg_root = salt['pillar.get']('services.api.env_files.api', []) -%}
-{{ salt['pillar.get']('services.api.env_files.api', []) }}
+{{ salt['pillar.get']('services:front:test', []) }}
 {{ pg_root }}
 {%- if pg_root.API_DATABASE_HOSTNAME is defined -%}
 {{ pg_root.API_DATABASE_HOSTNAME }}:{{ pg_root.API_DATABASE_PORT | default('5432')}}:{{ pg_root.API_DATABASE_NAME }}:{{ pg_root.API_DATABASE_USERNAME }}:{{ pg_root.API_DATABASE_USERNAME }}
