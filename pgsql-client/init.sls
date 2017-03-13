@@ -15,7 +15,7 @@ pgsql-client:
 {%- set pg_root = salt['pillar.get']('services:front:test:env', []) %}
 pgsql-environment:
   file.append:
-    - name: ~/.bash_profile
+    - name: ~/.bashrc
     - text:
         - export PGDATABASE={{ pg_root.API_DATABASE_NAME }}
         - export PGUSER={{ pg_root.API_DATABASE_USERNAME }}
