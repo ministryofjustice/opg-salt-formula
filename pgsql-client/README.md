@@ -1,0 +1,1 @@
+Simple formula to install psql-client to a target
