@@ -33,6 +33,8 @@ kibana:
   env_file: ./kibana.env
 
 {% if remote_elastic == 'no' -%}
+elasticsearchshareddata:
+  image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
 
 # data on volume
 elasticsearch:
@@ -49,6 +51,9 @@ elasticsearch:
     DASHBOARD_SLEEP_TIMEOUT: 90
   volumes:
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
+    - /tmp/elasticsearchshareddata
+  volumes-from:
+    - elasticsearchshareddata
 
 {%- else %}
 elasticsearch:
