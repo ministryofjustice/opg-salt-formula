@@ -47,8 +47,8 @@ elasticsearch:
   # data on volume
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
   {%- else %}
-	- /tmp/elasticsearchshareddata
-  volumes-from:
+    - /tmp/elasticsearchshareddata
+  volumes_from:
     - elasticsearchshareddata
   environment:
     SHARED_DATA_BASE: '/tmp'
