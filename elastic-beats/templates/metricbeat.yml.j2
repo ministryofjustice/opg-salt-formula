@@ -38,9 +38,7 @@ metricbeat:
 output:
   elasticsearch:
     hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:9200"]
-    index: "metricbeat-%{[beat.version]}-%{+yyyy.MM.dd}"
-
-     template:
+    template:
       enabled: true
       name: "metricbeat"
       path: "/etc/metricbeat/metricbeat.template.json"
