@@ -53,7 +53,7 @@ elasticsearch:
     DASHBOARD_SLEEP_TIMEOUT: 90
     ELASTICSEARCH_NODE_TYPE: 'ingest'
     
- elasticsearchshareddata:
+elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
 {% endif -%}
 
