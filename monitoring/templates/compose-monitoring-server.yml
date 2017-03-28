@@ -51,8 +51,10 @@ elasticsearch:
     SHARED_DATA_BASE: '/tmp'
     SHARED_DATA_PATHS: "['/elasticsearchshareddata/beats']"
     DASHBOARD_SLEEP_TIMEOUT: 90
+{% if remote_elastic == 'yes' -%}
     ELASTICSEARCH_NODE_TYPE: 'ingest'
-    
+{% endif -%}
+
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
 
