@@ -21,11 +21,18 @@ metricbeat:
       processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
 
     #------------------------------- Docker Module -------------------------------
-  - module: docker
-    metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
-    hosts: ["unix:///var/run/docker.sock"]
-    enabled: true
-    period: 10s
+    - module: docker
+      metricsets:
+        - container
+        - cpu
+        - diskio
+        - healthcheck
+        - info
+        - memory
+        - network
+      hosts: ["unix:///var/run/docker.sock"]
+      enabled: true
+      period: 10s
 
     #-------------------------- Output -------------------------------
 output:
