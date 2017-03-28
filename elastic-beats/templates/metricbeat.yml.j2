@@ -1,0 +1,94 @@
+########################## Metricbeat Configuration ###########################
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
+
+#==========================  Modules configuration ============================
+#------------------------------- Input -------------------------------
+metricbeat:
+  modules:
+    - module: system
+      metricsets:
+        - cpu
+        - load
+        - filesystem
+        - fsstat
+        - memory
+        - network
+        - process
+        - socket
+      enabled: true
+      period: 10s
+      processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
+
+    #------------------------------- Docker Module -------------------------------
+    # Still experimental
+    - module: docker
+      metricsets:
+        - container
+        - cpu
+        - diskio
+        - info
+        - memory
+        - network
+      hosts: ["unix:///var/run/docker.sock"]
+      enabled: true
+      period: 10s
+
+    #-------------------------- Output -------------------------------
+output:
+  elasticsearch:
+    hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:9200"]
+    template:
+      enabled: true
+      name: "metricbeat"
+      path: "/etc/metricbeat/metricbeat.template.json"
+
+    max_retries: 3
+    timeout: 90
+    ssl.verification_mode: none
+
+    # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+    # 1.2 are enabled.
+    #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+    # SSL configuration. By default is off.
+    # List of root certificates for HTTPS server verifications
+    #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+    # Certificate for SSL client authentication
+    #ssl.certificate: "/etc/pki/client/cert.pem"
+
+    # Client Certificate Key
+    #ssl.key: "/etc/pki/client/cert.key"
+
+    # Optional passphrase for decrypting the Certificate Key.
+    #ssl.key_passphrase: ''
+
+    # Configure cipher suites to be used for SSL connections
+    #ssl.cipher_suites: []
+
+    # Configure curve types for ECDHE based cipher suites
+    #ssl.curve_types: []
+
+
+#========================== General ==================================
+tags: [ "{{ grains['opg_role'] }}", "{{ grains['opg_stackname'] }}", "{{ grains['opg_environment'] }}", "{{ grains['opg_project'] }}" ]
+
+#================================ Logging ======================================
+logging:
+  to_syslog: false
+  to_files: true
+  files:
+    path: /var/log/beats
+    name: metricbeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7
+
+  # Enable debug output for selected components. To enable all selectors use ["*"]
+  # Other available selectors are beat, publish, service
+  # Multiple selectors can be chained.
+  #selectors: [ ]
+
+  # Sets log level. The default log level is error.
+  # Available log levels are: critical, error, warning, info, debug
+  level: info

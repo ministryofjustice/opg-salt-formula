@@ -24,7 +24,6 @@ router:
     - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
     - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
 
-
 kibana:
   image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
   log_driver: syslog
@@ -32,9 +31,6 @@ kibana:
     - elasticsearch
   env_file: ./kibana.env
 
-{% if remote_elastic == 'no' -%}
-
-# data on volume
 elasticsearch:
   image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
   log_driver: syslog
@@ -43,26 +39,25 @@ elasticsearch:
     - 9200:9200
     - 9300:9300
   env_file: ./elasticsearch.env
+  volumes:
+    - /tmp/elasticsearchshareddata
+{% if remote_elastic == 'no' -%}
+  # data on volume
+    - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
+{% endif -%}
+  volumes_from:
+    - elasticsearchshareddata
   environment:
     SHARED_DATA_BASE: '/tmp'
     SHARED_DATA_PATHS: "['/elasticsearchshareddata/beats']"
     DASHBOARD_SLEEP_TIMEOUT: 90
-  volumes:
-    - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-
-{%- else %}
-elasticsearch:
-  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
-  log_driver: syslog
-  mem_limit: 5000000000
-  ports:
-    - 9200:9200
-    - 9300:9300
-  env_file: ./elasticsearch.env
-  environment:
+{% if remote_elastic == 'yes' -%}
     ELASTICSEARCH_NODE_TYPE: 'ingest'
-
 {% endif -%}
+
+elasticsearchshareddata:
+  image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
+
 
 # user/pass: admin/admin
 grafana:
