@@ -18,7 +18,7 @@ metricbeat:
         - socket
       enabled: true
       period: 10s
-      processes: ['.*']
+      processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
 
     #------------------------------- Docker Module -------------------------------
   - module: docker
