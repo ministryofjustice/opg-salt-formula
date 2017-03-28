@@ -21,12 +21,12 @@ metricbeat:
       processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
 
     #------------------------------- Docker Module -------------------------------
+    # Still experimental
     - module: docker
       metricsets:
         - container
         - cpu
         - diskio
-        - healthcheck
         - info
         - memory
         - network
