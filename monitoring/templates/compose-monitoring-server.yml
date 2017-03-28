@@ -40,11 +40,11 @@ elasticsearch:
     - 9300:9300
   env_file: ./elasticsearch.env
   volumes:
+    - /tmp/elasticsearchshareddata
 {% if remote_elastic == 'no' -%}
   # data on volume
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-{%- else %}
-    - /tmp/elasticsearchshareddata
+{% endif -%}
   volumes_from:
     - elasticsearchshareddata
   environment:
@@ -55,7 +55,7 @@ elasticsearch:
     
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
-{% endif -%}
+
 
 # user/pass: admin/admin
 grafana:
