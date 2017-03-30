@@ -44,7 +44,7 @@ elasticsearch:
 {% if remote_elastic == 'no' -%}
   # data on volume
     - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-{% endif -%}
+{% endif %}
   volumes_from:
     - elasticsearchshareddata
   environment:
@@ -53,7 +53,7 @@ elasticsearch:
     DASHBOARD_SLEEP_TIMEOUT: 90
 {% if remote_elastic == 'yes' -%}
     ELASTICSEARCH_NODE_TYPE: 'ingest'
-{% endif -%}
+{% endif %}
 
 elasticsearchshareddata:
   image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
