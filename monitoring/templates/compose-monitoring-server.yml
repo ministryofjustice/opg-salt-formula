@@ -71,7 +71,7 @@ grafana:
 
 
 logstash:
-  image: {{ registry_url }}/opguk/logstash:{{monitoring.version.opg_docker_monitoring}}
+  image: {{ registry_url }}/opguk/logstash5:{{monitoring.version.opg_docker_monitoring}}
   log_driver: syslog
   ports:
     - 2514:2514/udp
