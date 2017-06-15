@@ -74,10 +74,11 @@ def get_referenced_images(dir_list):
             ) as stream:
                 contents = yaml.load(stream)
                 for key, value in contents.iteritems():
-                    images.append(value['image'])
+                    if 'image' in value:
+                        images.append(value['image'])
 
-    for image in images:
-        image_list.append(docker_command(command='images', filter=image).rstrip())
+    for docker_image in images:
+        image_list.append(docker_command(command='images', filter=docker_image).rstrip())
 
     return image_list
 
