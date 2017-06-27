@@ -110,4 +110,4 @@ if len(cleanup_images):
             print ("Removing image {}".format(image))
             docker_command(command='rmi', arg=image)
         except subprocess.CalledProcessError as e:
-            print("{} {}").format(e.errno, e.strerror)
+            print("{}").format(e)
