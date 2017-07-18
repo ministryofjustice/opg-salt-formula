@@ -36,7 +36,7 @@ services:
   elasticsearch:
     image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring.version.opg_docker }}
     log_driver: syslog
-    mem_limit: 5000000000
+#    mem_limit: 5000000000
     ports:
       - 9200:9200
       - 9300:9300
@@ -89,7 +89,7 @@ services:
     ports:
       - 6379:6379
     env_file: ./redis.env
-    entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
+    entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","256mb","--maxmemory-policy","allkeys-lru"]
 
 
   # data on volume
