@@ -6,7 +6,8 @@ version: '2'
 services:
   router:
     image: {{ registry_url }}/opguk/nginx-router:{{ monitoring.version.opg_docker }}
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 80:80
       - 443:443
@@ -28,14 +29,16 @@ services:
 
   kibana:
     image: {{ registry_url }}/opguk/kibana:{{ monitoring.version.opg_docker }}
-    log_driver: syslog
+    logging:
+      driver: syslog
     links:
       - elasticsearch
     env_file: ./kibana.env
 
   elasticsearch:
     image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring.version.opg_docker }}
-    log_driver: syslog
+    logging:
+      driver: syslog
 #    mem_limit: 5000000000
     ports:
       - 9200:9200
@@ -63,7 +66,8 @@ services:
   # user/pass: admin/admin
   grafana:
     image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     links:
       - graphite
     env_file: ./grafana.env
@@ -72,7 +76,8 @@ services:
 
   logstash:
     image: {{ registry_url }}/opguk/logstash5:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 2514:2514/udp
       - 2514:2514
@@ -85,7 +90,8 @@ services:
 
   redis:
     image: redis:3.0.6
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 6379:6379
     env_file: ./redis.env
@@ -95,7 +101,8 @@ services:
   # data on volume
   graphite:
     image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 2003:2003
       - 2003:2003/udp
@@ -108,7 +115,8 @@ services:
 
   rabbitmq:
     image: {{ registry_url }}/opguk/rabbitmq:{{ monitoring.version.opg_docker }}
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 5672:5672
       - 5671:5671
@@ -117,7 +125,8 @@ services:
 
   sensuserver:
     image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     links:
       - redis
       - rabbitmq
@@ -127,7 +136,8 @@ services:
 
   sensuapi:
     image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     ports:
       - 4567:4567
     links:
@@ -138,7 +148,8 @@ services:
 
   uchiwa:
     image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
-    log_driver: syslog
+    logging:
+      driver: syslog
     links:
       - sensuapi
       - sensuserver
