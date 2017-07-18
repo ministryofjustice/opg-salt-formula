@@ -25,14 +25,14 @@ services:
       - OPG_NGINX_ROUTER_02_TARGET=http://graphite
       - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
       - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
-  
+
   kibana:
     image: {{ registry_url }}/opguk/kibana:{{ monitoring.version.opg_docker }}
     log_driver: syslog
     links:
       - elasticsearch
     env_file: ./kibana.env
-  
+
   elasticsearch:
     image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring.version.opg_docker }}
     log_driver: syslog
@@ -56,7 +56,7 @@ services:
   {% if remote_elastic == 'yes' %}
       ELASTICSEARCH_NODE_TYPE: 'ingest'
   {% endif %}
-  
+
   elasticsearchshareddata:
     image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{ monitoring.version.opg_docker }}
 
@@ -81,8 +81,8 @@ services:
       - elasticsearch
       - graphite
     env_file: ./logstash.env
-  
-  
+
+
   redis:
     image: redis:3.0.6
     log_driver: syslog
@@ -90,8 +90,8 @@ services:
       - 6379:6379
     env_file: ./redis.env
     entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
-  
-  
+
+
   # data on volume
   graphite:
     image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
@@ -104,8 +104,8 @@ services:
     env_file: ./graphite.env
     volumes:
       - {{ monitoring.server.graphite.data_dir }}:/opt/graphite/storage
-  
-  
+
+
   rabbitmq:
     image: {{ registry_url }}/opguk/rabbitmq:{{ monitoring.version.opg_docker }}
     log_driver: syslog
@@ -113,8 +113,8 @@ services:
       - 5672:5672
       - 5671:5671
     env_file: ./rabbitmq.env
-  
-  
+
+
   sensuserver:
     image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
     log_driver: syslog
@@ -123,8 +123,8 @@ services:
       - rabbitmq
       - sensuapi
     env_file: ./sensu.env
-  
-  
+
+
   sensuapi:
     image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
     log_driver: syslog
@@ -134,8 +134,8 @@ services:
       - redis
       - rabbitmq
     env_file: ./sensu.env
-  
-  
+
+
   uchiwa:
     image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
     log_driver: syslog
