@@ -28,6 +28,12 @@ stop()
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml kill
 }
 
+status()
+{
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
+}
+
+
 case "$1" in
   start)
     start
@@ -36,6 +42,7 @@ case "$1" in
     stop
     ;;
   reload)
+    stop
     start
     ;;
   restart)
@@ -43,13 +50,13 @@ case "$1" in
     start
     ;;
   status)
-    start
+    status
     ;;
   ps)
-    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
+    status
     ;;
   *)
-    echo "Usage: $0 {start|stop|reload|restart|ps}"
+    echo "Usage: $0 {start|stop|reload|restart|status|ps}"
     exit 1
     ;;
 esac
