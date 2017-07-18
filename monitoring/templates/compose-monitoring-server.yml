@@ -1,153 +1,145 @@
 {%- from "monitoring/map.jinja" import monitoring with context %}
 {%- set registry_url = salt['pillar.get']('docker_registry_url','') %}
 {%- set remote_elastic = salt['pillar.get']('monitoring:remote_es','no') %}
-#version: '2'
-router:
-  image: {{ registry_url }}/opguk/nginx-router:{{monitoring.version.opg_docker}}
-  log_driver: syslog
-  ports:
-    - 80:80
-    - 443:443
-  links:
-    - kibana
-    - grafana
-    - graphite
-    - uchiwa
-  environment:
-    - OPG_NGINX_SSL_FORCE_REDIRECT=1
-    - OPG_NGINX_ROUTER_00_VHOST=kibana.* ~^kibana-
-    - OPG_NGINX_ROUTER_00_TARGET=http://kibana:5601
-    - OPG_NGINX_ROUTER_01_VHOST=grafana.* ~^grafana-
-    - OPG_NGINX_ROUTER_01_TARGET=http://grafana:3000
-    - OPG_NGINX_ROUTER_02_VHOST=graphite.* ~^graphite-
-    - OPG_NGINX_ROUTER_02_TARGET=http://graphite
-    - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
-    - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
+version: '2'
 
-kibana:
-  image: {{ registry_url }}/opguk/kibana:{{monitoring.version.opg_docker}}
-  log_driver: syslog
-  links:
-    - elasticsearch
-  env_file: ./kibana.env
+services:
+  router:
+    image: {{ registry_url }}/opguk/nginx-router:{{ monitoring.version.opg_docker }}
+    log_driver: syslog
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - kibana
+      - grafana
+      - graphite
+      - uchiwa
+    environment:
+      - OPG_NGINX_SSL_FORCE_REDIRECT=1
+      - OPG_NGINX_ROUTER_00_VHOST=kibana.* ~^kibana-
+      - OPG_NGINX_ROUTER_00_TARGET=http://kibana:5601
+      - OPG_NGINX_ROUTER_01_VHOST=grafana.* ~^grafana-
+      - OPG_NGINX_ROUTER_01_TARGET=http://grafana:3000
+      - OPG_NGINX_ROUTER_02_VHOST=graphite.* ~^graphite-
+      - OPG_NGINX_ROUTER_02_TARGET=http://graphite
+      - OPG_NGINX_ROUTER_03_VHOST=sensu.*  ~^sensu-
+      - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
+  
+  kibana:
+    image: {{ registry_url }}/opguk/kibana:{{ monitoring.version.opg_docker }}
+    log_driver: syslog
+    links:
+      - elasticsearch
+    env_file: ./kibana.env
+  
+  elasticsearch:
+    image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring.version.opg_docker }}
+    log_driver: syslog
+    mem_limit: 5000000000
+    ports:
+      - 9200:9200
+      - 9300:9300
+    env_file: ./elasticsearch.env
+    volumes:
+      - /tmp/elasticsearchshareddata
+  {% if remote_elastic == 'no' -%}
+    # data on volume
+      - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
+  {% endif %}
+    volumes_from:
+      - elasticsearchshareddata
+    environment:
+      SHARED_DATA_BASE: '/tmp'
+      SHARED_DATA_PATHS: "['/elasticsearchshareddata/beats']"
+      DASHBOARD_SLEEP_TIMEOUT: 90
+  {% if remote_elastic == 'yes' %}
+      ELASTICSEARCH_NODE_TYPE: 'ingest'
+  {% endif %}
+  
+  elasticsearchshareddata:
+    image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{ monitoring.version.opg_docker }}
 
-elasticsearch:
-  image: {{ registry_url }}/opguk/elasticsearch5:{{monitoring.version.opg_docker}}
-  log_driver: syslog
-  mem_limit: 5000000000
-  ports:
-    - 9200:9200
-    - 9300:9300
-  env_file: ./elasticsearch.env
-  volumes:
-    - /tmp/elasticsearchshareddata
-{% if remote_elastic == 'no' -%}
+  # user/pass: admin/admin
+  grafana:
+    image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    links:
+      - graphite
+    env_file: ./grafana.env
+    volumes:
+      - {{ monitoring.server.grafana.data_dir }}:/usr/share/grafana/data
+
+  logstash:
+    image: {{ registry_url }}/opguk/logstash5:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    ports:
+      - 2514:2514/udp
+      - 2514:2514
+    links:
+      - redis
+      - elasticsearch
+      - graphite
+    env_file: ./logstash.env
+  
+  
+  redis:
+    image: redis:3.0.6
+    log_driver: syslog
+    ports:
+      - 6379:6379
+    env_file: ./redis.env
+    entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
+  
+  
   # data on volume
-    - {{ monitoring.server.elasticsearch.data_dir }}:/usr/share/elasticsearch/data
-{% endif %}
-  volumes_from:
-    - elasticsearchshareddata
-  environment:
-    SHARED_DATA_BASE: '/tmp'
-    SHARED_DATA_PATHS: "['/elasticsearchshareddata/beats']"
-    DASHBOARD_SLEEP_TIMEOUT: 90
-{% if remote_elastic == 'yes' %}
-    ELASTICSEARCH_NODE_TYPE: 'ingest'
-{% endif %}
-
-elasticsearchshareddata:
-  image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{monitoring.version.opg_docker}}
-
-
-# user/pass: admin/admin
-grafana:
-  image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  links:
-    - graphite
-  env_file: ./grafana.env
-  volumes:
-    - {{ monitoring.server.grafana.data_dir }}:/usr/share/grafana/data
-
-
-logstash:
-  image: {{ registry_url }}/opguk/logstash5:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  ports:
-    - 2514:2514/udp
-    - 2514:2514
-  links:
-    - redis
-    - elasticsearch
-    - graphite
-  env_file: ./logstash.env
-
-
-redis:
-  image: redis:3.0.6
-  log_driver: syslog
-  ports:
-    - 6379:6379
-  env_file: ./redis.env
-  entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","100mb","--maxmemory-policy","allkeys-lru"]
-
-
-# data on volume
-graphite:
-  image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  ports:
-    - 2003:2003
-    - 2003:2003/udp
-    - 8003:80
-    - 8125:8125/udp
-  env_file: ./graphite.env
-  volumes:
-    - {{ monitoring.server.graphite.data_dir }}:/opt/graphite/storage
-
-
-rabbitmq:
-  image: {{ registry_url }}/opguk/rabbitmq:{{monitoring.version.opg_docker}}
-  log_driver: syslog
-  ports:
-    - 5672:5672
-    - 5671:5671
-  env_file: ./rabbitmq.env
-
-
-sensuserver:
-  image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  links:
-    - redis
-    - rabbitmq
-    - sensuapi
-  env_file: ./sensu.env
-
-
-sensuapi:
-  image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  ports:
-    - 4567:4567
-  links:
-    - redis
-    - rabbitmq
-  env_file: ./sensu.env
-
-
-uchiwa:
-  image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
-  log_driver: syslog
-  links:
-    - sensuapi
-    - sensuserver
-  env_file: ./uchiwa.env
-
-{% if remote_elastic == 'no' -%}
-#elasticcurator:
-#  image: {{ registry_url }}/opguk/elasticsearch:{{monitoring.version.opg_docker_monitoring}}
-#  external_links:
-#    - monitoringserver_elasticsearch_1:elasticsearch
-#  env_file: ./elasticsearch.env
-{% endif -%}
+  graphite:
+    image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    ports:
+      - 2003:2003
+      - 2003:2003/udp
+      - 8003:80
+      - 8125:8125/udp
+    env_file: ./graphite.env
+    volumes:
+      - {{ monitoring.server.graphite.data_dir }}:/opt/graphite/storage
+  
+  
+  rabbitmq:
+    image: {{ registry_url }}/opguk/rabbitmq:{{ monitoring.version.opg_docker }}
+    log_driver: syslog
+    ports:
+      - 5672:5672
+      - 5671:5671
+    env_file: ./rabbitmq.env
+  
+  
+  sensuserver:
+    image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    links:
+      - redis
+      - rabbitmq
+      - sensuapi
+    env_file: ./sensu.env
+  
+  
+  sensuapi:
+    image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    ports:
+      - 4567:4567
+    links:
+      - redis
+      - rabbitmq
+    env_file: ./sensu.env
+  
+  
+  uchiwa:
+    image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
+    log_driver: syslog
+    links:
+      - sensuapi
+      - sensuserver
+    env_file: ./uchiwa.env
