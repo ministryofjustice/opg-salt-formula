@@ -86,7 +86,8 @@ services:
       - elasticsearch
       - graphite
     env_file: ./logstash.env
-
+    volumes:
+      - {{ monitoring.server.logstash.conf_dir }}:/etc/logstash/conf.d
 
   redis:
     image: redis:3.0.6
