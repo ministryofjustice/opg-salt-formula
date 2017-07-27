@@ -98,7 +98,6 @@ services:
     env_file: ./redis.env
     entrypoint: ["/entrypoint.sh","redis-server","--maxmemory","256mb","--maxmemory-policy","allkeys-lru"]
 
-
   # data on volume
   graphite:
     image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
