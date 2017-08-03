@@ -1,11 +1,12 @@
 {%- from "monitoring/map.jinja" import monitoring with context %}
 {%- set registry_url = salt['pillar.get']('docker_registry_url','') %}
+{%- set monitoring_version = ['pillar.get']('monitoring:version:opg_docker','latest') %}
 {%- set remote_elastic = salt['pillar.get']('monitoring:remote_es','no') %}
 version: '2'
 
 services:
   router:
-    image: {{ registry_url }}/opguk/nginx-router:{{ monitoring.version.opg_docker }}
+    image: {{ registry_url }}/opguk/nginx-router:{{ monitoring_version }}
     logging:
       driver: syslog
     ports:
@@ -28,7 +29,7 @@ services:
       - OPG_NGINX_ROUTER_03_TARGET=http://uchiwa:3000
 
   kibana:
-    image: {{ registry_url }}/opguk/kibana:{{ monitoring.version.opg_docker }}
+    image: {{ registry_url }}/opguk/kibana:{{ monitoring_version }}
     logging:
       driver: syslog
     links:
@@ -36,10 +37,9 @@ services:
     env_file: ./kibana.env
 
   elasticsearch:
-    image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring.version.opg_docker }}
+    image: {{ registry_url }}/opguk/elasticsearch5:{{ monitoring_version }}
     logging:
       driver: syslog
-#    mem_limit: 5000000000
     ports:
       - 9200:9200
       - 9300:9300
@@ -61,11 +61,11 @@ services:
   {% endif %}
 
   elasticsearchshareddata:
-    image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{ monitoring.version.opg_docker }}
+    image: {{ registry_url }}/opguk/elasticsearch-shared-data:{{ monitoring_version }}
 
   # user/pass: admin/admin
   grafana:
-    image: {{ registry_url }}/opguk/grafana:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/grafana:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     links:
@@ -75,7 +75,7 @@ services:
       - {{ monitoring.server.grafana.data_dir }}:/usr/share/grafana/data
 
   logstash:
-    image: {{ registry_url }}/opguk/logstash5:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/logstash5:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     ports:
@@ -100,7 +100,7 @@ services:
 
   # data on volume
   graphite:
-    image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/graphite-statsd:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     ports:
@@ -114,7 +114,7 @@ services:
 
 
   rabbitmq:
-    image: {{ registry_url }}/opguk/rabbitmq:{{ monitoring.version.opg_docker }}
+    image: {{ registry_url }}/opguk/rabbitmq:{{ monitoring_version }}
     logging:
       driver: syslog
     ports:
@@ -124,7 +124,7 @@ services:
 
 
   sensuserver:
-    image: {{ registry_url }}/opguk/sensu-server:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/sensu-server:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     links:
@@ -135,7 +135,7 @@ services:
 
 
   sensuapi:
-    image: {{ registry_url }}/opguk/sensu-api:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/sensu-api:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     ports:
@@ -147,7 +147,7 @@ services:
 
 
   uchiwa:
-    image: {{ registry_url }}/opguk/uchiwa:{{monitoring.version.opg_docker_monitoring}}
+    image: {{ registry_url }}/opguk/uchiwa:{{monitoring_version_monitoring}}
     logging:
       driver: syslog
     links:
