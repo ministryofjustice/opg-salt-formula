@@ -8,17 +8,18 @@ metricbeat:
   modules:
     - module: system
       metricsets:
-        - cpu
         - load
+        - diskio
         - filesystem
-        - fsstat
-        - memory
         - network
         - process
         - socket
       enabled: true
       period: 10s
       processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
+      interfaces: [eth0]
+      filters:
+        - drop_event.when.regexp.mount_point: '^/(sys|cgroup|run|proc|dev|etc|host)($|/)'
 
     #------------------------------- Docker Module -------------------------------
     # Still experimental
@@ -26,7 +27,6 @@ metricbeat:
       metricsets:
         - container
         - cpu
-        - diskio
         - info
         - memory
         - network
@@ -72,7 +72,7 @@ output:
 
 
 #========================== General ==================================
-tags: [ "{{ grains['opg_role'] }}", "{{ grains['opg_stackname'] }}", "{{ grains['opg_project'] }}" ]
+tags: [ "{{ salt['grains.get']('opg_role') }}", "{{ salt['grains.get']('opg_stackname') }}" ]
 
 #================================ Logging ======================================
 logging:
