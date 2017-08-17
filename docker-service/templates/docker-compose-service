@@ -16,6 +16,14 @@
 
 start()
 {
+    STATUS=`/usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps`
+    if ! echo $STATUS | grep Up; then
+        echo "service /etc/docker-compose/{{service_name}}/docker-compose.yml not running..."
+        # make sure we clean up if the service is not running
+        stop
+    fi
+
+    echo "starting /etc/docker-compose/{{service_name}}/docker-compose.yml ..."
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml up -d
     ret=$?
     /usr/sbin/conntrack -D -p udp
@@ -24,8 +32,18 @@ start()
 
 stop()
 {
-    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml stop
+    echo "stopping /etc/docker-compose/{{service_name}}/docker-compose.yml ..."
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml down
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml kill
+}
+
+status()
+{
+    STATUS=`/usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps`
+    if ! echo $STATUS | grep Up; then
+        echo "service /etc/docker-compose/{{service_name}}/docker-compose.yml not running..."
+        exit 1
+    fi
 }
 
 case "$1" in
@@ -43,7 +61,7 @@ case "$1" in
     start
     ;;
   status)
-    start
+    status
     ;;
   ps)
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
