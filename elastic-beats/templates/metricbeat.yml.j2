@@ -72,7 +72,7 @@ output:
 
 
 #========================== General ==================================
-tags: [ "{{ salt[grains.get]('opg_role') }}", "{{ salt[grains.get]('opg_stackname') }}" ]
+tags: [ "{{ salt['grains.get']('opg_role') }}", "{{ salt['grains.get']('opg_stackname') }}" ]
 
 #================================ Logging ======================================
 logging:
