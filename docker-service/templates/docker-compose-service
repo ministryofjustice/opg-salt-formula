@@ -16,6 +16,7 @@
 
 start()
 {
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml pull
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml up -d
     ret=$?
     /usr/sbin/conntrack -D -p udp
