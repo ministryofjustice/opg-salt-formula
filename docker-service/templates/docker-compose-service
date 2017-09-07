@@ -25,7 +25,7 @@ start()
 
 stop()
 {
-    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml stop
+    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml stop -t 30
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml kill
 }
 
