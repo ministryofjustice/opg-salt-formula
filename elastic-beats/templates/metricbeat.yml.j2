@@ -10,10 +10,10 @@ metricbeat:
       metricsets:
         - load
         - diskio
-#        - filesystem
-#        - network
+        - filesystem
+        - network
         - process
-#        - socket
+        - socket
       enabled: true
       period: 60s
       processes:  ["php.*", "nginx.*","java.*","docker.*","mongo.*","salt.*","python.*","collectdmon.*"]
@@ -26,7 +26,7 @@ metricbeat:
     - module: docker
       metricsets:
         - container
-#        - cpu
+        - cpu
         - info
         - memory
         - network
