@@ -44,7 +44,7 @@ case "$1" in
     start
     ;;
   status)
-    start
+    echo "status() mocked out, as there is no docker-compose status command"
     ;;
   ps)
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
