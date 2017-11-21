@@ -1,6 +1,7 @@
 include:
   - bootstrap
   - admins
+  - users
   - ntp
   - cron
   - docker-service
