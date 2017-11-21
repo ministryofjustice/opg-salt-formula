@@ -25,6 +25,7 @@ include:
 {%       endfor %}
 {%     endif %}
 
+
 /etc/docker-compose/{{service_name}}/docker-compose.yml:
   file.managed:
     - source: {{pillar['services'][service_name]['docker-compose-source']}}
@@ -46,6 +47,14 @@ include:
 docker-compose-{{service_name}}:
   service.running:
     - enable: True
+# any service that consumes files from a host mounted volume, such as a NFS
+# mount. we set set it here as a requirement for the service
+{%  if pillar['services'][service_name]['required_mounts'] is defined %}
+{%    for mount_name in pillar['services'][service_name]['required_mounts'] %}
+    - require:
+      - {{ mount_name }}
+{%    endfor %}
+{%  endif %}
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
 {%     endif %}
