@@ -3,7 +3,6 @@
 include:
   - bootstrap.groups
 
-
 {% for user, data in users.iteritems() %}
 
 {% if 'absent' in data and data['absent'] %}
@@ -20,6 +19,7 @@ ssh-user-{{ user }}:
     - order: 1
     - groups:
       - adm
+      - ssh_user
   {% for key in data.get("public_keys", []) %}
 
 ssh-user-{{ user}}-key-{{ loop.index0 }}:
