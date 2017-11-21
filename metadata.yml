@@ -13,3 +13,4 @@ exports:
 - elastic-beats
 - ecs
 - pgsql-client
+- users
