@@ -10,15 +10,17 @@ unattended-upgrades:
     - source: salt://bootstrap/templates/unattended-upgrades
     - mode: 440
     - template: jinja
-    - order: 1
+    - require:
+      - pkg: unattended-upgrades
 
 /etc/apt/apt.conf.d/20auto-upgrades:
   file:
     - managed
-    - source: salt://bootstrap/templates/20auto-upgrades
+    - source: salt://bootstrap/templates/auto-upgrades
     - mode: 440
     - template: jinja
-    - order: 1
+    - require:
+      - pkg: unattended-upgrades
 
 apticron:
   pkg:
@@ -30,4 +32,5 @@ apticron:
     - source: salt://bootstrap/templates/apticron.conf
     - mode: 440
     - template: jinja
-    - order: 1
+    - require:
+      - pkg: apticron
