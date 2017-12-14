@@ -8,3 +8,4 @@ include:
   - .policy-rc
   - .sysctl
   - .grub
+  - .auto-updates
