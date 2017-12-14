@@ -22,15 +22,3 @@ unattended-upgrades:
     - require:
       - pkg: unattended-upgrades
 
-apticron:
-  pkg:
-    - installed
-
-/etc/apticron/apticron.conf:
-  file:
-    - managed
-    - source: salt://bootstrap/templates/apticron.conf
-    - mode: 440
-    - template: jinja
-    - require:
-      - pkg: apticron
