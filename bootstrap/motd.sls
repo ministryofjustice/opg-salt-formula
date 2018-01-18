@@ -4,4 +4,4 @@
 motd_quote:
   file.append:
     - name: /etc/motd
-    - text: "Role: {{ grains['opg-role'] }}"
+    - text: "Role: {{ grains['opg_role'] }}"
