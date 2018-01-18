@@ -12,7 +12,7 @@ base:
     - opg-collectd
     - hardening
 
-  'opg-role:monitoring':
+  'opg_role:monitoring':
     - match: grain
     - opg-docker-monitoring.server
 ```
