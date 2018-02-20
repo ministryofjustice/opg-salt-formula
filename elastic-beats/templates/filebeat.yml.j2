@@ -64,7 +64,7 @@ output:
 
   ### Elasticsearch as output
   elasticsearch:
-    hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:9200"]
+    hosts: ["{{ salt['pillar.get']('elastic-beats:config:es_server', 'monitoring') }}:{{ salt['pillar.get']('elastic-beats:config:es_port', '9200') }}"]
 
     # Optional protocol and basic auth credentials.
     #protocol: "https"
