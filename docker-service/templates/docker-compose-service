@@ -10,10 +10,6 @@
 # Description:       Start/stop {{service_name}} containers
 ### END INIT INFO
 
-#TODO: add docker-compose output parsing and run conntrack only when needed
-#TODO: replace status with docker-compose parser and checker if containers are running (if really needed)
-
-
 start()
 {
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml pull
@@ -29,6 +25,20 @@ stop()
     /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml kill
 }
 
+docker_compose() {
+  /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml "$1"
+}
+
+docker_compose_status() {
+  docker_status=$(docker_compose "ps" &>/dev/null )$?
+
+  if [[ "$docker_status" == 0 ]];then
+    echo "{{service_name}} is running"
+  else
+    docker_compose "ps"
+  fi
+}
+
 case "$1" in
   start)
     start
@@ -40,14 +50,13 @@ case "$1" in
     start
     ;;
   restart)
-    stop
-    start
+    docker_compose "restart"
     ;;
   status)
-    start
+    docker_compose_status
     ;;
   ps)
-    /usr/local/bin/docker-compose -p {{service_name}} -f /etc/docker-compose/{{service_name}}/docker-compose.yml ps
+    docker_compose "ps"
     ;;
   *)
     echo "Usage: $0 {start|stop|reload|restart|ps}"
