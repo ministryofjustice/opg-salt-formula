@@ -30,7 +30,7 @@ docker_compose() {
 }
 
 docker_compose_status() {
-  docker_status=$(docker_compose "ps" &>/dev/null )$?
+  local docker_status=$(docker_compose "ps" | grep "Up" &>/dev/null)$?
 
   if [[ "$docker_status" == 0 ]];then
     echo "{{service_name}} is running"
