@@ -76,7 +76,7 @@ docker-compose-{{service_name}}:
 {%       endfor %}
 {%     else %}
 {%       for app_name in pillar['services'][service_name] %}
-{%         if 'env' in pillar['services'][service_name][app_name] %}
+{%         if app_name != 'initscript' and 'env' in pillar['services'][service_name][app_name] %}
 
 /etc/docker-compose/{{service_name}}/{{app_name}}.env:
   file.managed:
