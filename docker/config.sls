@@ -1,6 +1,6 @@
 {% from 'docker/map.jinja' import docker with context %}
 
-/root/.dockercfg:
+/root/.docker/config.json:
   file.managed:
     - source: salt://docker/templates/dockercfg
     - mode: 0600
