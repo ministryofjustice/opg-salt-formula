@@ -1,12 +1,21 @@
 {% from 'docker/map.jinja' import docker with context %}
 
-/root/.docker/config.json:
+/root/.dockercfg:
   file.managed:
     - source: salt://docker/templates/dockercfg
     - mode: 0600
     - user: root
     - group: root
     - template: jinja
+
+/root/.docker/config.json:
+  file.managed:
+    - source: salt://docker/templates/dockercfg-docker-18
+    - mode: 0600
+    - user: root
+    - group: root
+    - template: jinja
+    - makedirs: True
 
 
 {% if docker.manage_config == 'true' %}
