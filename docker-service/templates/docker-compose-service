@@ -1,5 +1,5 @@
-{% from "monitoring/map.jinja" import monitoring with context %}
 #!/bin/bash
+{% from "monitoring/map.jinja" import monitoring with context %}
 ### BEGIN INIT INFO
 # Provides:          docker-compose-{{service_name}}
 # Required-Start:    $remote_fs $syslog
