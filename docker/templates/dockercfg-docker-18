@@ -1,5 +1,5 @@
 {
-  auths: {
+  "auths": {
     {% for key, value in pillar.get('docker-registries').iteritems() %}
 
       "{{key}}":
