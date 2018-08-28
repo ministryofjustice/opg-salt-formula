@@ -8,6 +8,15 @@
     - group: root
     - template: jinja
 
+/root/.docker/config.json:
+  file.managed:
+    - source: salt://docker/templates/dockercfg-docker-18
+    - mode: 0600
+    - user: root
+    - group: root
+    - template: jinja
+    - makedirs: True
+
 
 {% if docker.manage_config == 'true' %}
 /etc/default/docker:

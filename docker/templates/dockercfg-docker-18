@@ -1,0 +1,15 @@
+{
+  "auths": {
+    {% for key, value in pillar.get('docker-registries').iteritems() %}
+
+      "{{key}}":
+      {
+         "auth": "{{value.auth}}",
+         "email": "{{value.email}}",
+         "username": "{{value.username}}",
+         "password": "{{value.password}}"
+      }{% if not loop.last %},{% endif %}
+      
+    {% endfor %}
+    }
+}
