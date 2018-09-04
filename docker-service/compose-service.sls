@@ -43,19 +43,12 @@ include:
     - context:
         service_name: {{service_name}}
 
-service docker-compose-{{service_name}} stop:
-  cmd.run:
-    - order: 1
-
 docker-compose-{{service_name}}:
   service.running:
     - enable: True
     - reload: True
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
-    - prereq:
-      - cmd: service docker-compose-{{service_name}} stop
-    - order: 2
     
       
 {%     endif %}
