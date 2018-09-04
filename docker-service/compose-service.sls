@@ -43,12 +43,11 @@ include:
     - context:
         service_name: {{service_name}}
 
-/etc/systemd/system/docker-compose-{{service_name}}.service.d/remain.conf:
-  file.managed:
-    - makedirs: true
-    - contents: |
-        [Service]
-        RemainAfterExit=no
+kill-docker-compose-{{service_name}}:
+  service.dead:
+    - name: docker-compose-{{service_name}}
+    - watch:
+      - file: /etc/init.d/docker-compose-{{service_name}}
 
 docker-compose-{{service_name}}:
   service.running:
@@ -56,8 +55,8 @@ docker-compose-{{service_name}}:
     - reload: True
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
-    - require:
-      - file: /etc/systemd/system/docker-compose-{{service_name}}.service.d/remain.conf
+    - prereq:
+      - file kill-docker-compose-{{service_name}}
       
 {%     endif %}
 
