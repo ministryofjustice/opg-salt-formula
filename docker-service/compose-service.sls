@@ -43,7 +43,7 @@ include:
     - context:
         service_name: {{service_name}}
 
-kill-docker-compose-{{service_name}}:
+docker-compose-{{service_name}}-dead:
   service.dead:
     - name: docker-compose-{{service_name}}
     - watch:
@@ -56,7 +56,7 @@ docker-compose-{{service_name}}:
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
     - prereq:
-      - file kill-docker-compose-{{service_name}}
+      - service docker-compose-{{service_name}}-dead
       
 {%     endif %}
 
