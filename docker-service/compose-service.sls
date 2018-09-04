@@ -44,7 +44,7 @@ include:
         service_name: {{service_name}}
 
 service docker-compose-{{service_name}} stop:
-  cmd.run
+  cmd.run:
     - order: 1
 
 docker-compose-{{service_name}}:
