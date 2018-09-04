@@ -43,10 +43,6 @@ include:
     - context:
         service_name: {{service_name}}
 
-docker-compose-{{service_name}}-dead:
-  service.dead:
-    - name: docker-compose-{{service_name}}
-
 docker-compose-{{service_name}}:
   service.running:
     - enable: True
@@ -54,7 +50,7 @@ docker-compose-{{service_name}}:
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
     - prereq:
-      - service: docker-compose-{{service_name}}-dead
+      - cmd: service docker-compose-{{service_name}} stop
       
 {%     endif %}
 
