@@ -46,6 +46,7 @@ include:
 docker-compose-{{service_name}}:
   service.running:
     - enable: True
+    - reload: True
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
 {%     endif %}
