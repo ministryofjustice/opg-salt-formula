@@ -45,6 +45,7 @@ include:
 
 service docker-compose-{{service_name}} stop:
   cmd.run
+    - order: 1
 
 docker-compose-{{service_name}}:
   service.running:
@@ -54,6 +55,8 @@ docker-compose-{{service_name}}:
       - file: /etc/init.d/docker-compose-{{service_name}}
     - prereq:
       - cmd: service docker-compose-{{service_name}} stop
+    - order: 2
+    
       
 {%     endif %}
 
