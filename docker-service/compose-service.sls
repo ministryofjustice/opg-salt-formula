@@ -46,8 +46,6 @@ include:
 docker-compose-{{service_name}}-dead:
   service.dead:
     - name: docker-compose-{{service_name}}
-    - watch:
-      - file: /etc/init.d/docker-compose-{{service_name}}
 
 docker-compose-{{service_name}}:
   service.running:
