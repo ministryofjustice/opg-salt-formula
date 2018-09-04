@@ -56,7 +56,7 @@ docker-compose-{{service_name}}:
     - watch:
       - file: /etc/init.d/docker-compose-{{service_name}}
     - prereq:
-      - service docker-compose-{{service_name}}-dead
+      - service: docker-compose-{{service_name}}-dead
       
 {%     endif %}
 
