@@ -51,7 +51,7 @@ docker-compose-{{service_name}}:
       - file: /etc/init.d/docker-compose-{{service_name}}
       
 # hack for 16.04 whose systemd status can be 'active (exited)' which salt (wrongly) believes is running
-service docker-compose-{{service_name}} start:
+service docker-compose-{{service_name}} restart:
   cmd.run:
     - require:
       - service: docker-compose-{{service_name}}
