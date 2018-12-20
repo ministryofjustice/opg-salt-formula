@@ -7,8 +7,6 @@ exports:
 - docker
 - docker-cleaner
 - docker-service
-- mongodb
-- mongodb-client
 - monitoring
 - elastic-beats
 - ecs
