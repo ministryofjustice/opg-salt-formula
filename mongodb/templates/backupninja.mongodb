@@ -1,5 +1,0 @@
-{% from 'mongodb/map.jinja' import mongodb with context %}
-when = {{salt['pillar.get']('mongodb.backupninja.when', 'hourly')}}
-mongouser = admin
-mongopass = {{salt['pillar.get']('mongodb_admin_password')}}
-noprimarybackup = {{mongodb.noprimarybackup}}
