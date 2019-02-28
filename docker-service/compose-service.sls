@@ -94,6 +94,20 @@ docker-compose-{{service_name}}:
 {%       endif %}
 
 {%         endif %}
+
+{%         if 'ini' in pillar['services'][service_name][app_name] %}
+/etc/docker-compose/{{service_name}}/blackfire.ini:
+  file.managed:
+    - source: salt://docker-service/templates/blackfire.ini
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 600
+    - context:
+        app_name: {{app_name}}
+        service_name: {{service_name}}
+{%         endif %}
+
 {%       endfor %}
 {%     endif %}
 {%   endif %}
